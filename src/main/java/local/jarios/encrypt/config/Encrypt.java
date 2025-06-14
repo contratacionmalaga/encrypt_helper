@@ -45,7 +45,7 @@ public class Encrypt {
             log.debug("Clave maestra: {}", claveMaestra);
             String resultado = encryptor.encrypt(textoPlano);
             log.debug("Original: {}", textoPlano);
-            log.debug("Texto Cifrado: {}", resultado);
+            log.debug("Resultado: {}", resultado);
             log.debug("Texto cifrado correctamente.");
             return resultado;
         } catch (Exception e) {

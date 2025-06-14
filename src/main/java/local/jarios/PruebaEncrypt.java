@@ -55,10 +55,19 @@ public class PruebaEncrypt {
         }
 
         try {
+            log.info("Texto oroginal: {}", original);
+            log.info("Clave maestra: {}", claveMaestra);
+
             String cifrado = Encrypt.encrypt(original, claveMaestra);
             log.info("Texto cifrado: {}", cifrado);
 
-            String descifrado = Decrypt.decrypt(cifrado, claveMaestra);
+            String resultado = "ENC(" + cifrado + ")";
+            log.info("Texto cifrado con envoltorio: {}", resultado);
+
+            String cifradoSinEnvoltorio = resultado.substring(4, resultado.length() - 1);
+            log.info("Texto crifrado sin envoltorio: {}", cifradoSinEnvoltorio);
+
+            String descifrado = Decrypt.decrypt(cifradoSinEnvoltorio, claveMaestra);
             log.info("Texto descifrado: {}", descifrado);
 
         } catch (Exception e) {
