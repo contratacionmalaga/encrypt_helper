@@ -61,7 +61,7 @@ public class PruebaEncrypt {
             String cifrado = Encrypt.encrypt(original, claveMaestra);
             log.info("Texto cifrado: {}", cifrado);
 
-            String resultado = "ENC(" + cifrado + ")";
+            String resultado = String.format("ENC(%s)", cifrado);
             log.info("Texto cifrado con envoltorio: {}", resultado);
 
             String cifradoSinEnvoltorio = resultado.substring(4, resultado.length() - 1);
