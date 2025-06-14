@@ -1,6 +1,6 @@
-package local.jarios.encryptor.config;
+package local.jarios.encrypt.config;
 
-import local.jarios.encryptor.exception.EncryptorException;
+import local.jarios.encrypt.exception.EncryptException;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,50 +13,50 @@ class EncryptorTest {
 
     @Test
     void testEncryptAndDecrypt_successful() {
-        String encrypted = Encryptor.encrypt(TEXTO, CLAVE);
+        String encrypted = Encrypt.encrypt(TEXTO, CLAVE);
         assertNotNull(encrypted);
         assertNotEquals(TEXTO, encrypted);
 
-        String decrypted = Encryptor.decrypt(encrypted, CLAVE);
+        String decrypted = Decrypt.decrypt(encrypted, CLAVE);
         assertEquals(TEXTO, decrypted);
     }
 
     @Test
     void testEncrypt_textoVacio() {
-        String encrypted = Encryptor.encrypt("", CLAVE);
+        String encrypted = Encrypt.encrypt("", CLAVE);
         assertNotNull(encrypted);
         assertFalse(encrypted.isEmpty());
 
-        String decrypted = Encryptor.decrypt(encrypted, CLAVE);
+        String decrypted = Decrypt.decrypt(encrypted, CLAVE);
         assertEquals("", decrypted);
     }
 
     @Test
     void testEncrypt_nullTexto() {
-        assertThrows(EncryptorException.class, () -> Encryptor.encrypt(null, CLAVE));
+        assertThrows(EncryptException.class, () -> Encrypt.encrypt(null, CLAVE));
     }
 
     @Test
     void testEncrypt_nullClave() {
-        assertThrows(EncryptorException.class, () -> Encryptor.encrypt(TEXTO, null));
+        assertThrows(EncryptException.class, () -> Encrypt.encrypt(TEXTO, null));
     }
 
     @Test
     void testDecrypt_nullTexto() {
-        assertThrows(EncryptorException.class, () -> Encryptor.decrypt(null, CLAVE));
+        assertThrows(EncryptException.class, () -> Decrypt.decrypt(null, CLAVE));
     }
 
     @Test
     void testDecrypt_claveIncorrecta() {
-        String encrypted = Encryptor.encrypt(TEXTO, CLAVE);
-        assertThrows(EncryptorException.class, () -> Encryptor.decrypt(encrypted, "otraClaveInvalida"));
+        String encrypted = Encrypt.encrypt(TEXTO, CLAVE);
+        assertThrows(EncryptException.class, () -> Decrypt.decrypt(encrypted, "otraClaveInvalida"));
     }
 
     @Test
     void testEncrypt_andDecrypt_claveLarga() {
         String longKey = "claveMuyLargaConCaracteresEspeciales!@#$%&*()_+1234567890";
-        String encrypted = Encryptor.encrypt(TEXTO, longKey);
-        String decrypted = Encryptor.decrypt(encrypted, longKey);
+        String encrypted = Encrypt.encrypt(TEXTO, longKey);
+        String decrypted = Decrypt.decrypt(encrypted, longKey);
         assertEquals(TEXTO, decrypted);
     }
 }

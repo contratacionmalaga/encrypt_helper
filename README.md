@@ -34,7 +34,7 @@ Agrega esta dependencia en tu `pom.xml`:
 # Ejemplo de uso de Encryptor en Java
 
 ```java
-import local.jarios.encryptor.config.Encryptor;
+import local.jarios.encrypt.config.Encrypt;
 
 public class EjemploEncryptor {
     public static void main(String[] args) {
@@ -42,11 +42,11 @@ public class EjemploEncryptor {
         String textoPlano = "contraseña_super_secreta";
 
         // Encriptar
-        String cifrado = Encryptor.encrypt(textoPlano, claveMaestra);
+        String cifrado = Encrypt.encrypt(textoPlano, claveMaestra);
         System.out.println("Texto cifrado: " + cifrado);
 
         // Desencriptar
-        String descifrado = Encryptor.decrypt(cifrado, claveMaestra);
+        String descifrado = Encrypt.decrypt(cifrado, claveMaestra);
         System.out.println("Texto descifrado: " + descifrado);
     }
 }
