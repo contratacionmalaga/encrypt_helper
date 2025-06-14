@@ -2,17 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>local.jarios</groupId>
-    <artifactId>encryptor</artifactId>
+    <artifactId>encrypt-helper</artifactId>
     <version>1.0.3-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>encryptor</name>
+    <name>encrypt-helper</name>
     <description>Encriptar / Desencriptar claves de forma sencilla</description>
 
     <scm>
-        <connection>scm:git:https://github.com/contratacionmalaga/encryptor.git</connection>
-        <developerConnection>scm:git:git@github.com:contratacionmalaga/encryptor.git</developerConnection>
-        <url>https://github.com/contratacionmalaga/encryptor</url>
+        <connection>scm:git:https://github.com/contratacionmalaga/encrypt-helper.git</connection>
+        <developerConnection>scm:git:git@github.com:contratacionmalaga/encrypt-helper.git</developerConnection>
+        <url>https://github.com/contratacionmalaga/encrypt-helper</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -20,12 +20,12 @@
         <repository>
             <id>github-releases</id>
             <!-- Cambié la URL a la correcta para GitHub Packages -->
-            <url>https://maven.pkg.github.com/contratacionmalaga/encryptor</url>
+            <url>https://maven.pkg.github.com/contratacionmalaga/encrypt-helper</url>
         </repository>
         <snapshotRepository>
             <id>github-snapshots</id>
             <!-- Cambié la URL a la correcta para GitHub Packages -->
-            <url>https://maven.pkg.github.com/contratacionmalaga/encryptor</url>
+            <url>https://maven.pkg.github.com/contratacionmalaga/encrypt-helper</url>
         </snapshotRepository>
     </distributionManagement>
 
@@ -33,7 +33,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <exec.mainClass>local.jarios.encryptor</exec.mainClass>
+        <exec.mainClass>local.jarios.encrypt-helper</exec.mainClass>
     </properties>
 
     <dependencies>
@@ -105,7 +105,7 @@
 
     <build>
 
-        <finalName>encryptor</finalName>
+        <finalName>encrypt-helper</finalName>
 
         <plugins>
 
@@ -227,7 +227,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>local.jarios.encryptor</mainClass>
+                            <mainClass>local.jarios.encrypt-helper</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
