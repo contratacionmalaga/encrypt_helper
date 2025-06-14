@@ -1,17 +1,26 @@
-package local.jarios.property.exception;
+package local.jarios.encryptor.exception;
 
 /**
- * Description:
- * Author: juan
- * Date: 13/06/2025
- * Team:
+ * Excepción personalizada que representa errores durante el cifrado o descifrado.
  */
-public class PropertiesLoadException extends RuntimeException {
-    public PropertiesLoadException(String message) {
+public class EncryptorException extends RuntimeException {
+
+    /**
+     * Constructor con mensaje de error.
+     *
+     * @param message mensaje descriptivo del error
+     */
+    public EncryptorException(String message) {
         super(message);
     }
 
-    public PropertiesLoadException(String message, Throwable cause) {
+    /**
+     * Constructor con mensaje y causa del error.
+     *
+     * @param message mensaje descriptivo
+     * @param cause   excepción que causó el error
+     */
+    public EncryptorException(String message, Throwable cause) {
         super(message, cause);
     }
 }

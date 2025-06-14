@@ -1,86 +1,62 @@
-package local.jarios.property.config;
+package local.jarios.encryptor.config;
 
-import local.jarios.property.exception.PropertiesLoadException;
+import local.jarios.encryptor.exception.EncryptorException;
 import org.junit.jupiter.api.*;
-
-import java.util.Properties;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class PropertiesManagerTest {
+class EncryptorTest {
 
-    private static PropertiesManager manager;
+    private static final String CLAVE = "claveSegura123!";
+    private static final String TEXTO = "valorSecreto123";
 
-    @BeforeAll
-    static void setup() {
-        manager = PropertiesManager.getInstance();
+    @Test
+    void testEncryptAndDecrypt_successful() {
+        String encrypted = Encryptor.encrypt(TEXTO, CLAVE);
+        assertNotNull(encrypted);
+        assertNotEquals(TEXTO, encrypted);
+
+        String decrypted = Encryptor.decrypt(encrypted, CLAVE);
+        assertEquals(TEXTO, decrypted);
     }
 
     @Test
-    @Order(1)
-    void testSingletonInstance() {
-        PropertiesManager another = PropertiesManager.getInstance();
-        assertSame(manager, another, "Debe ser la misma instancia singleton");
+    void testEncrypt_textoVacio() {
+        String encrypted = Encryptor.encrypt("", CLAVE);
+        assertNotNull(encrypted);
+        assertFalse(encrypted.isEmpty());
+
+        String decrypted = Encryptor.decrypt(encrypted, CLAVE);
+        assertEquals("", decrypted);
     }
 
     @Test
-    @Order(2)
-    void testLoadPropertiesExist() {
-        Properties props = manager.getProperties("app");
-        assertNotNull(props, "El fichero app.properties debe existir");
-        assertFalse(props.isEmpty(), "app.properties no debe estar vacío");
+    void testEncrypt_nullTexto() {
+        assertThrows(EncryptorException.class, () -> Encryptor.encrypt(null, CLAVE));
     }
 
     @Test
-    @Order(3)
-    void testGetPropertyFallback() {
-        // Suponemos que 'JAVA_HOME' está en env o sistema
-        String javaHome = manager.getProperty("nonexistentFile", "JAVA_HOME");
-        assertNotNull(javaHome, "Debe obtener JAVA_HOME del sistema o entorno");
+    void testEncrypt_nullClave() {
+        assertThrows(EncryptorException.class, () -> Encryptor.encrypt(TEXTO, null));
     }
 
     @Test
-    @Order(4)
-    void testPrintPropertiesException() {
-        Exception e = assertThrows(PropertiesLoadException.class, () -> {
-            manager.printProperties("noExiste");
-        });
-        assertTrue(e.getMessage().contains("No se encontró el fichero"));
+    void testDecrypt_nullTexto() {
+        assertThrows(EncryptorException.class, () -> Encryptor.decrypt(null, CLAVE));
     }
 
     @Test
-    @Order(5)
-    void testValidateRequiredKeys() {
-        Set<String> required = Set.of("app.name");
-        assertDoesNotThrow(() -> manager.validateRequiredKeys("app", required));
+    void testDecrypt_claveIncorrecta() {
+        String encrypted = Encryptor.encrypt(TEXTO, CLAVE);
+        assertThrows(EncryptorException.class, () -> Encryptor.decrypt(encrypted, "otraClaveInvalida"));
     }
 
     @Test
-    @Order(6)
-    void testValidateRequiredKeysFail() {
-        Set<String> required = Set.of("clave.inexistente");
-        PropertiesLoadException e = assertThrows(PropertiesLoadException.class, () -> {
-            manager.validateRequiredKeys("app", required);
-        });
-        assertTrue(e.getMessage().contains("Clave requerida faltante"));
-    }
-
-    @Test
-    @Order(7)
-    void testExportAsJson() {
-        String json = manager.exportAsJson("app", true);
-        assertNotNull(json);
-        assertTrue(json.contains("app.name"));
-        assertTrue(json.contains("*****") || json.contains("app.name")); // máscara o valor real
-    }
-
-    @Test
-    @Order(8)
-    void testReload() {
-        assertDoesNotThrow(() -> {
-            manager.reload();
-        });
+    void testEncrypt_andDecrypt_claveLarga() {
+        String longKey = "claveMuyLargaConCaracteresEspeciales!@#$%&*()_+1234567890";
+        String encrypted = Encryptor.encrypt(TEXTO, longKey);
+        String decrypted = Encryptor.decrypt(encrypted, longKey);
+        assertEquals(TEXTO, decrypted);
     }
 }
