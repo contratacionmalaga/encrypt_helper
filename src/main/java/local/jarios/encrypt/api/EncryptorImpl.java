@@ -27,7 +27,7 @@ public class EncryptorImpl implements Encryptor {
     /**
      * Constructor vacío
      */
-    private EncryptorImpl() {
+    public EncryptorImpl() {
         // Constructor vacío
     }
 
