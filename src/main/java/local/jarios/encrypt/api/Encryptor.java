@@ -17,7 +17,7 @@ public interface Encryptor {
     void setDefaultKey(String defaultKey);
 
     /**
-     * Obtiene la clave por defecto que se usará si no se proporciona una explícita.
+     * @return la clave por defecto que se usará si no se proporciona una explícita.
      */
     String getDefaultKey();
 

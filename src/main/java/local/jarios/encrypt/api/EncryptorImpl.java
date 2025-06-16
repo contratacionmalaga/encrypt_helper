@@ -25,6 +25,13 @@ import org.jasypt.util.text.BasicTextEncryptor;
 public class EncryptorImpl implements Encryptor {
 
     /**
+     * Constructor vacío
+     */
+    private EncryptorImpl() {
+        // Constructor vacío
+    }
+
+    /**
      * Clave maestra por defecto usada para cifrar/descifrar si no se proporciona una personalizada.
      * -- GETTER --
      *  Devuelve la clave por defecto actual configurada.
