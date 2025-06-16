@@ -2,38 +2,39 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>local.jarios</groupId>
-    <artifactId>encrypt-helper</artifactId>
-    <version>1.0.7</version>
+    <artifactId>encrypt_helper</artifactId>
+    <version>1.0.7-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>encrypt-helper</name>
+    <name>encrypt_helper</name>
     <description>Encriptar / Desencriptar claves de forma sencilla</description>
 
     <scm>
-        <connection>scm:git:https://github.com/contratacionmalaga/encrypt-helper.git</connection>
-        <developerConnection>scm:git:git@github.com:contratacionmalaga/encrypt-helper.git</developerConnection>
-        <url>https://github.com/contratacionmalaga/encrypt-helper</url>
-        <tag>v1.0.7</tag>
+        <connection>scm:git:https://github.com/contratacionmalaga/encrypt_helper.git</connection>
+        <developerConnection>scm:git:git@github.com:contratacionmalaga/encrypt_helper.git</developerConnection>
+        <url>https://github.com/contratacionmalaga/encrypt_helper</url>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
         <repository>
             <id>github-releases</id>
             <!-- Cambié la URL a la correcta para GitHub Packages -->
-            <url>https://maven.pkg.github.com/contratacionmalaga/encrypt-helper</url>
+            <url>https://maven.pkg.github.com/contratacionmalaga/encrypt_helper</url>
         </repository>
         <snapshotRepository>
             <id>github-snapshots</id>
             <!-- Cambié la URL a la correcta para GitHub Packages -->
-            <url>https://maven.pkg.github.com/contratacionmalaga/encrypt-helper</url>
+            <url>https://maven.pkg.github.com/contratacionmalaga/encrypt_helper</url>
         </snapshotRepository>
     </distributionManagement>
 
     <properties>
+        <custom.final.name>${project.artifactId}-${project.version}</custom.final.name>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <exec.mainClass>local.jarios.encrypt-helper</exec.mainClass>
+        <exec.mainClass>local.jarios.EncryptorDemo</exec.mainClass>
     </properties>
 
     <dependencies>
@@ -112,7 +113,7 @@
 
     <build>
 
-        <finalName>encrypt-helper</finalName>
+        <finalName>encrypt_helper</finalName>
 
         <plugins>
 
@@ -231,16 +232,20 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <finalName>${project.artifactId}-${project.version}</finalName>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.7.1</version>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>local.jarios.encrypt-helper</mainClass>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
-                    </archive>
+                    <appendAssemblyId>true</appendAssemblyId> <!-- para que tenga sufijo -->
+                    <finalName>${project.artifactId}-${project.version}</finalName> <!-- nombre con _fat -->
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
