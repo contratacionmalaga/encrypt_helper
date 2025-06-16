@@ -1,79 +1,37 @@
-# Encryptor
+package local.jarios;
 
-Servicio Java para encriptar y desencriptar claves usando una clave maestra, pensado para almacenar valores seguros en ficheros `.properties` o cualquier otro sistema que requiera almacenamiento seguro de texto.
+import local.jarios.encrypt.api.EncryptorImpl;
+import local.jarios.encrypt.api.Encryptor;
+import lombok.extern.slf4j.Slf4j;
 
----
+/**
+ * Clase principal para ejecutar el cifrado y descifrado desde línea de comandos.
+ * <p>
+ * Uso:
+ * {@code java -jar encriptador.jar <claveMaestra> <texto>}
+ * </p>
+ */
+@Slf4j
+public class EncryptorDemo {
 
-## Características principales
+    /**
+     * Texto original por defecto para cifrar si no se pasa argumento.
+     */
+    private static final String TEXTO_ORIGINAL_DEFAULT = "BWFZHGPIJKXVNSLU";
 
-- **Encriptación** y **desencriptación** de texto con contraseña (clave maestra).
-- Utiliza [`org.jasypt.util.text.BasicTextEncryptor`](https://www.jasypt.org/api/jasypt/1.9.3/org/jasypt/util/text/BasicTextEncryptor.html) para cifrado.
-- Los textos cifrados se codifican en Base64 para fácil almacenamiento.
-- Excepciones personalizadas para errores de cifrado (`EncryptorException`).
-- Logging con [SLF4J](https://www.slf4j.org/) para seguimiento y auditoría.
-- Test unitarios con JUnit 5 para garantizar la calidad del código.
-- Fácil integración en otros proyectos como dependencia Maven.
-- Preparado para publicación en GitHub Packages.
----
-# Requisitos para su funcionamiento
-- Java 8 o superior
-- Biblioteca Jasypt (dependencia Maven)
-- Biblioteca Lombok (para anotaciones @Slf4j, @Getter)
-````
-<dependency>
-    <groupId>org.jasypt</groupId>
-    <artifactId>jasypt</artifactId>
-    <version>1.9.3</version>
-</dependency>
-````
---
-### Dependencia Maven
-Agrega esta dependencia en tu `pom.xml`:
-```xml
-<dependency>
-    <groupId>local.jarios</groupId>
-    <artifactId>encryptor</artifactId>
-    <version>1.0.3</version>
-</dependency>
-```
---
-# Crear una instanacia del servicio
+    /**
+     * Constructor por defecto.
+     * Esta clase solo contiene el método main, no se debe instanciar.
+     */
+    public EncryptorDemo() {
+        // Constructor vacío
+    }
 
-```
-Encryptor encryptor = new EncryptorImpl();
-```
---
-# Configurar la clave por defecto
-
-```
-encryptor.setDefaultKey("MiClaveSegura2025");
-```
---
-# Cifrar texto con clave por defecto
-
-```
-String textoPlano = "Mi secreto";
-String textoCifrado = encryptor.encrypt(textoPlano);
-```
---
-# Cifrar texto con clave personalizada
-```
-String clavePersonalizada = "ClaveDiferente!";
-String textoCifrado = encryptor.encrypt(textoPlano, clavePersonalizada);
-```
---
-# Descifrar texto con clave por defecto
-```
-String textoDescifrado = encryptor.decrypt(textoCifrado);
-```
---
-# Descifrar texto con clave personalizada
-```
-String textoDescifrado = encryptor.decrypt(textoCifrado, clavePersonalizada);
-```
---
-# Ejemplo completo
-````
+    /**
+     * Función principal para ejecutar el cifrado y descifrado.
+     *
+     * @param args parámetros de entrada: [0] clave maestra, [1] texto original
+     */
     public static void main(String[] args) {
 
         Encryptor encryptor = new EncryptorImpl();
@@ -131,4 +89,4 @@ String textoDescifrado = encryptor.decrypt(textoCifrado, clavePersonalizada);
             log.error("Error en cifrado/descifrado", e);
         }
     }
-````
+}
