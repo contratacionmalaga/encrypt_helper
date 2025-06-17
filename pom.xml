@@ -79,6 +79,12 @@
             <version>1.9.3</version>
         </dependency>
 
+        <dependency>
+            <groupId>local.jarios</groupId>
+            <artifactId>version_helper</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+
         <!-- Dependencias para JUnit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
