@@ -32,7 +32,7 @@ Agrega esta dependencia en tu `pom.xml`:
 ```xml
 <dependency>
     <groupId>local.jarios</groupId>
-    <artifactId>encryptor</artifactId>
+    <artifactId>encryptorService</artifactId>
     <version>1.0.3</version>
 </dependency>
 ```
@@ -40,47 +40,47 @@ Agrega esta dependencia en tu `pom.xml`:
 # Crear una instanacia del servicio
 
 ```
-Encryptor encryptor = new EncryptorImpl();
+Encryptor encryptorService = new EncryptorImpl();
 ```
 --
 # Configurar la clave por defecto
 
 ```
-encryptor.setDefaultKey("MiClaveSegura2025");
+encryptorService.setDefaultKey("MiClaveSegura2025");
 ```
 --
 # Cifrar texto con clave por defecto
 
 ```
 String textoPlano = "Mi secreto";
-String textoCifrado = encryptor.encrypt(textoPlano);
+String textoCifrado = encryptorService.encrypt(textoPlano);
 ```
 --
 # Cifrar texto con clave personalizada
 ```
 String clavePersonalizada = "ClaveDiferente!";
-String textoCifrado = encryptor.encrypt(textoPlano, clavePersonalizada);
+String textoCifrado = encryptorService.encrypt(textoPlano, clavePersonalizada);
 ```
 --
 # Descifrar texto con clave por defecto
 ```
-String textoDescifrado = encryptor.decrypt(textoCifrado);
+String textoDescifrado = encryptorService.decrypt(textoCifrado);
 ```
 --
 # Descifrar texto con clave personalizada
 ```
-String textoDescifrado = encryptor.decrypt(textoCifrado, clavePersonalizada);
+String textoDescifrado = encryptorService.decrypt(textoCifrado, clavePersonalizada);
 ```
 --
 # Ejemplo completo
 ````
     public static void main(String[] args) {
 
-        Encryptor encryptor = new EncryptorImpl();
+        Encryptor encryptorService = new EncryptorImpl();
         log.info("Servicio Encryptor creado correctamente.");
 
         // Muestra clave por defecto inicial
-        log.info("Clave por defecto inicial: {}", encryptor.getDefaultKey());
+        log.info("Clave por defecto inicial: {}", encryptorService.getDefaultKey());
 
         String claveMaestra;
         String textoOriginal;
@@ -90,7 +90,7 @@ String textoDescifrado = encryptor.decrypt(textoCifrado, clavePersonalizada);
             textoOriginal = args[1];
             log.info("Parámetros recibidos: clave maestra oculta, texto original: {}", textoOriginal);
         } else {
-            claveMaestra = encryptor.getDefaultKey();
+            claveMaestra = encryptorService.getDefaultKey();
             textoOriginal = TEXTO_ORIGINAL_DEFAULT;
             log.info("No se recibieron parámetros válidos. Usando valores por defecto.");
             log.info("Clave maestra por defecto: {}", claveMaestra);
@@ -99,23 +99,23 @@ String textoDescifrado = encryptor.decrypt(textoCifrado, clavePersonalizada);
 
         try {
             // Cambiamos la clave por defecto a la clave recibida (o la que ya tenía)
-            encryptor.setDefaultKey(claveMaestra);
-            log.info("Clave por defecto configurada a: {}", encryptor.getDefaultKey());
+            encryptorService.setDefaultKey(claveMaestra);
+            log.info("Clave por defecto configurada a: {}", encryptorService.getDefaultKey());
 
             // CIFRADO usando clave por defecto (sin pasar la clave explícita)
-            String cifradoConClaveDefecto = encryptor.encrypt(textoOriginal);
+            String cifradoConClaveDefecto = encryptorService.encrypt(textoOriginal);
             log.info("Texto cifrado usando clave por defecto: {}", cifradoConClaveDefecto);
 
             // CIFRADO usando clave personalizada (pasándola explícitamente)
-            String cifradoConClavePersonalizada = encryptor.encrypt(textoOriginal, claveMaestra);
+            String cifradoConClavePersonalizada = encryptorService.encrypt(textoOriginal, claveMaestra);
             log.info("Texto cifrado usando clave personalizada: {}", cifradoConClavePersonalizada);
 
             // DESCIFRADO usando clave por defecto
-            String descifradoConClaveDefecto = encryptor.decrypt(cifradoConClaveDefecto);
+            String descifradoConClaveDefecto = encryptorService.decrypt(cifradoConClaveDefecto);
             log.info("Texto descifrado usando clave por defecto: {}", descifradoConClaveDefecto);
 
             // DESCIFRADO usando clave personalizada
-            String descifradoConClavePersonalizada = encryptor.decrypt(cifradoConClavePersonalizada, claveMaestra);
+            String descifradoConClavePersonalizada = encryptorService.decrypt(cifradoConClavePersonalizada, claveMaestra);
             log.info("Texto descifrado usando clave personalizada: {}", descifradoConClavePersonalizada);
 
             // Prueba de envoltorio "ENC(...)"
@@ -124,7 +124,7 @@ String textoDescifrado = encryptor.decrypt(textoCifrado, clavePersonalizada);
 
             // Extraemos el texto cifrado del envoltorio y lo desciframos
             String cifradoSinEnvoltorio = envoltorio.substring(4, envoltorio.length() - 1);
-            String descifradoDesdeEnvoltorio = encryptor.decrypt(cifradoSinEnvoltorio);
+            String descifradoDesdeEnvoltorio = encryptorService.decrypt(cifradoSinEnvoltorio);
             log.info("Texto descifrado desde envoltorio usando clave por defecto: {}", descifradoDesdeEnvoltorio);
 
         } catch (Exception e) {

@@ -1,4 +1,6 @@
-package local.jarios.encrypt.api;
+package local.jarios.encryptor.api;
+
+import local.jarios.encryptor.exception.EncryptorException;
 
 /**
  * Servicio de cifrado y descifrado de texto.
@@ -7,7 +9,7 @@ package local.jarios.encrypt.api;
  * @author Juan
  * @since 1.0.0
  */
-public interface Encryptor {
+public interface EncryptorService {
 
     /**
      * Establece la clave por defecto que se usará si no se proporciona una explícita.
@@ -36,7 +38,7 @@ public interface Encryptor {
      * @param key       clave personalizada para el cifrado
      * @return texto cifrado en Base64
      */
-    String encrypt(String plainText, String key);
+    String encrypt(String plainText, String key) throws EncryptorException;
 
     /**
      * Descifra el texto cifrado usando la clave por defecto.
@@ -53,5 +55,5 @@ public interface Encryptor {
      * @param key           clave personalizada para el descifrado
      * @return texto descifrado
      */
-    String decrypt(String encryptedText, String key);
+    String decrypt(String encryptedText, String key) throws EncryptorException;
 }

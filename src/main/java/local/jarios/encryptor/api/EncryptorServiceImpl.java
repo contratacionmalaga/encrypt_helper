@@ -1,12 +1,13 @@
-package local.jarios.encrypt.api;
+package local.jarios.encryptor.api;
 
-import local.jarios.encrypt.exception.EncryptException;
+import local.jarios.encryptor.common.util.Constantes;
+import local.jarios.encryptor.exception.EncryptorException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.util.text.BasicTextEncryptor;
 
 /**
- * Implementación del servicio {@link Encryptor} usando Jasypt para cifrado y descifrado de texto.
+ * Implementación del servicio {@link EncryptorService} usando Jasypt para cifrado y descifrado de texto.
  * <p>
  * Permite:
  * <ul>
@@ -22,32 +23,33 @@ import org.jasypt.util.text.BasicTextEncryptor;
  */
 @Getter
 @Slf4j
-public class EncryptorImpl implements Encryptor {
-
-    /**
-     * Constructor vacío
-     */
-    public EncryptorImpl() {
-        // Constructor vacío
-    }
+public class EncryptorServiceImpl implements EncryptorService {
 
     /**
      * Clave maestra por defecto usada para cifrar/descifrar si no se proporciona una personalizada.
      * -- GETTER --
      *  Devuelve la clave por defecto actual configurada.
      */
-    private String defaultKey = "Malaga$$2025";
+    private String defaultKey;
+
+    /**
+     * Constructor vacío
+     */
+    public EncryptorServiceImpl() {
+        defaultKey = Constantes.DEFAULT_SECRET_KEY;
+    }
+
 
     /**
      * Establece la clave por defecto para operaciones de cifrado/descifrado.
      *
      * @param defaultKey nueva clave por defecto (no puede ser nula ni vacía)
-     * @throws EncryptException si la clave es nula o vacía
+     * @throws EncryptorException si la clave es nula o vacía
      */
     @Override
-    public void setDefaultKey(String defaultKey) {
+    public void setDefaultKey(String defaultKey) throws EncryptorException {
         if (defaultKey == null || defaultKey.isBlank()) {
-            throw new EncryptException("La clave por defecto no puede ser nula ni vacía.");
+            throw new EncryptorException("La clave por defecto no puede ser nula ni vacía.");
         }
         this.defaultKey = defaultKey;
         log.debug("Clave por defecto actualizada.");
@@ -58,7 +60,7 @@ public class EncryptorImpl implements Encryptor {
      *
      * @param plainText texto a cifrar
      * @return texto cifrado en Base64
-     * @throws EncryptException si el texto es nulo o ocurre un error
+     * @throws EncryptorException si el texto es nulo o ocurre un error
      */
     @Override
     public String encrypt(String plainText) {
@@ -71,12 +73,12 @@ public class EncryptorImpl implements Encryptor {
      * @param plainText texto a cifrar
      * @param key       clave de cifrado (si es nula se usará la clave por defecto)
      * @return texto cifrado en Base64
-     * @throws EncryptException si ocurre un error en el proceso
+     * @throws EncryptorException si ocurre un error en el proceso
      */
     @Override
-    public String encrypt(String plainText, String key) {
+    public String encrypt(String plainText, String key) throws EncryptorException {
         if (plainText == null) {
-            throw new EncryptException("El texto a cifrar no puede ser null.");
+            throw new EncryptorException("El texto a cifrar no puede ser null.");
         }
         String finalKey = resolveKey(key);
         try {
@@ -86,7 +88,7 @@ public class EncryptorImpl implements Encryptor {
             return encryptor.encrypt(plainText);
         } catch (Exception e) {
             log.error("Error durante el cifrado", e);
-            throw new EncryptException("Error cifrando el texto", e);
+            throw new EncryptorException("Error cifrando el texto", e);
         }
     }
 
@@ -95,10 +97,11 @@ public class EncryptorImpl implements Encryptor {
      *
      * @param encryptedText texto cifrado en Base64
      * @return texto plano descifrado
-     * @throws EncryptException si ocurre un error o el texto es nulo
+     * @throws EncryptorException si ocurre un error o el texto es nulo
      */
     @Override
     public String decrypt(String encryptedText) {
+
         return decrypt(encryptedText, null);
     }
 
@@ -108,12 +111,12 @@ public class EncryptorImpl implements Encryptor {
      * @param encryptedText texto cifrado en Base64
      * @param key           clave para descifrado (si es nula se usará la clave por defecto)
      * @return texto plano descifrado
-     * @throws EncryptException si ocurre un error en el proceso
+     * @throws EncryptorException si ocurre un error en el proceso
      */
     @Override
-    public String decrypt(String encryptedText, String key) {
+    public String decrypt(String encryptedText, String key) throws EncryptorException {
         if (encryptedText == null) {
-            throw new EncryptException("El texto a descifrar no puede ser null.");
+            throw new EncryptorException("El texto a descifrar no puede ser null.");
         }
         String finalKey = resolveKey(key);
         try {
@@ -123,7 +126,7 @@ public class EncryptorImpl implements Encryptor {
             return encryptor.decrypt(encryptedText);
         } catch (Exception e) {
             log.error("Error durante el descifrado", e);
-            throw new EncryptException("Error descifrando el texto", e);
+            throw new EncryptorException("Error descifrando el texto", e);
         }
     }
 

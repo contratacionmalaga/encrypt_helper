@@ -1,16 +1,16 @@
-package local.jarios.encrypt.exception;
+package local.jarios.encryptor.exception;
 
 /**
  * Excepción personalizada que representa errores durante el cifrado o descifrado.
  */
-public class EncryptException extends RuntimeException {
+public class EncryptorException extends RuntimeException {
 
     /**
      * Constructor con mensaje de error.
      *
      * @param message mensaje descriptivo del error
      */
-    public EncryptException(String message) {
+    public EncryptorException(String message) {
         super(message);
     }
 
@@ -20,7 +20,7 @@ public class EncryptException extends RuntimeException {
      * @param message mensaje descriptivo
      * @param cause   excepción que causó el error
      */
-    public EncryptException(String message, Throwable cause) {
+    public EncryptorException(String message, Throwable cause) {
         super(message, cause);
     }
 }
