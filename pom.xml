@@ -35,7 +35,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <exec.mainClass>local.jarios.EncryptorDemo</exec.mainClass>
+        <exec.mainClass>local.jarios.encryptor.EncryptorDemo</exec.mainClass>
     </properties>
 
     <dependencies>
@@ -80,24 +80,18 @@
             <version>1.9.3</version>
         </dependency>
 
-        <dependency>
-            <groupId>local.jarios</groupId>
-            <artifactId>version_helper</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-
         <!-- Dependencias para JUnit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.13.1</version>
+            <version>5.13.2</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.13.1</version>
+            <version>5.13.2</version>
             <scope>test</scope>
         </dependency>
 
@@ -124,6 +118,19 @@
         <finalName>${final.name}</finalName>
 
         <plugins>
+
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>12.1.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

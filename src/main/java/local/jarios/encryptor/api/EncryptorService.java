@@ -14,14 +14,16 @@ public interface EncryptorService {
     /**
      * Establece la clave por defecto que se usará si no se proporciona una explícita.
      *
-     * @param defaultKey clave maestra por defecto (no puede ser nula o vacía)
+     * @param encryptKey clave maestra por defecto (no puede ser nula o vacía)
      */
-    void setDefaultKey(String defaultKey);
+    void setEncryptKey(String encryptKey);
 
     /**
+     * Devuelve la clave de encriptación
+     *
      * @return la clave por defecto que se usará si no se proporciona una explícita.
      */
-    String getDefaultKey();
+    String getEncryptKey();
 
     /**
      * Cifra el texto usando la clave por defecto.
@@ -29,7 +31,7 @@ public interface EncryptorService {
      * @param plainText texto plano a cifrar
      * @return texto cifrado en Base64
      */
-    String encrypt(String plainText);
+    String encryptDefaultKey(String plainText);
 
     /**
      * Cifra el texto usando una clave personalizada.
@@ -46,7 +48,7 @@ public interface EncryptorService {
      * @param encryptedText texto cifrado en Base64
      * @return texto descifrado
      */
-    String decrypt(String encryptedText);
+    String decryptDefaultKey(String encryptedText);
 
     /**
      * Descifra el texto cifrado usando una clave personalizada.

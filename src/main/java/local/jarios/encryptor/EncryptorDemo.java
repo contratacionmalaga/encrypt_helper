@@ -1,8 +1,14 @@
-package local.jarios;
+package local.jarios.encryptor;
 
 import local.jarios.encryptor.api.EncryptorServiceImpl;
 import local.jarios.encryptor.api.EncryptorService;
+import local.jarios.encryptor.common.util.Mensajes;
+import local.jarios.encryptor.enums.TipoFinalEjecucion;
+import local.jarios.encryptor.exception.EncryptorException;
+import local.jarios.encryptor.helpers.FinalDelProgramaHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Clase principal para ejecutar el cifrado y descifrado desde línea de comandos.
@@ -13,6 +19,11 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class EncryptorDemo {
+
+    /**
+     * LOGGER del componente
+     */
+    private static final Logger LOGGER = LogManager.getLogger("local.jarios.encryptor");
 
     /**
      * Texto original por defecto para cifrar si no se pasa argumento.
@@ -34,11 +45,14 @@ public class EncryptorDemo {
      */
     public static void main(String[] args) {
 
+        // Inicio del log
+        LOGGER.info(Mensajes.INICIO);
+
         EncryptorService encryptorService = new EncryptorServiceImpl();
         log.info("Servicio Encryptor creado correctamente.");
 
         // Muestra clave por defecto inicial
-        log.info("Clave por defecto inicial: {}", encryptorService.getDefaultKey());
+        log.info("Clave por defecto inicial: {}", encryptorService.getEncryptKey());
 
         String claveMaestra;
         String textoOriginal;
@@ -48,7 +62,7 @@ public class EncryptorDemo {
             textoOriginal = args[1];
             log.info("Parámetros recibidos: clave maestra oculta, texto original: {}", textoOriginal);
         } else {
-            claveMaestra = encryptorService.getDefaultKey();
+            claveMaestra = encryptorService.getEncryptKey();
             textoOriginal = TEXTO_ORIGINAL_DEFAULT;
             log.info("No se recibieron parámetros válidos. Usando valores por defecto.");
             log.info("Clave maestra por defecto: {}", claveMaestra);
@@ -57,11 +71,11 @@ public class EncryptorDemo {
 
         try {
             // Cambiamos la clave por defecto a la clave recibida (o la que ya tenía)
-            encryptorService.setDefaultKey(claveMaestra);
-            log.info("Clave por defecto configurada a: {}", encryptorService.getDefaultKey());
+            encryptorService.setEncryptKey(claveMaestra);
+            log.info("Clave por defecto configurada a: {}", encryptorService.getEncryptKey());
 
             // CIFRADO usando clave por defecto (sin pasar la clave explícita)
-            String cifradoConClaveDefecto = encryptorService.encrypt(textoOriginal);
+            String cifradoConClaveDefecto = encryptorService.encryptDefaultKey(textoOriginal);
             log.info("Texto cifrado usando clave por defecto: {}", cifradoConClaveDefecto);
 
             // CIFRADO usando clave personalizada (pasándola explícitamente)
@@ -69,7 +83,7 @@ public class EncryptorDemo {
             log.info("Texto cifrado usando clave personalizada: {}", cifradoConClavePersonalizada);
 
             // DESCIFRADO usando clave por defecto
-            String descifradoConClaveDefecto = encryptorService.decrypt(cifradoConClaveDefecto);
+            String descifradoConClaveDefecto = encryptorService.decryptDefaultKey(cifradoConClaveDefecto);
             log.info("Texto descifrado usando clave por defecto: {}", descifradoConClaveDefecto);
 
             // DESCIFRADO usando clave personalizada
@@ -82,11 +96,15 @@ public class EncryptorDemo {
 
             // Extraemos el texto cifrado del envoltorio y lo desciframos
             String cifradoSinEnvoltorio = envoltorio.substring(4, envoltorio.length() - 1);
-            String descifradoDesdeEnvoltorio = encryptorService.decrypt(cifradoSinEnvoltorio);
+            String descifradoDesdeEnvoltorio = encryptorService.decrypt(cifradoSinEnvoltorio, claveMaestra);
             log.info("Texto descifrado desde envoltorio usando clave por defecto: {}", descifradoDesdeEnvoltorio);
+            FinalDelProgramaHelper.finalizar(TipoFinalEjecucion.CORRECTO);
 
-        } catch (Exception e) {
-            log.error("Error en cifrado/descifrado", e);
+        } catch (EncryptorException ex) {
+
+            LOGGER.error("Error en las operaciones sobre ficheros properties. Mensaje: {}", ex.getMessage(), ex);
+            FinalDelProgramaHelper.finalizar(TipoFinalEjecucion.ERROR);
+
         }
     }
 }

@@ -2,8 +2,10 @@ package local.jarios.encryptor.api;
 
 import local.jarios.encryptor.common.util.Constantes;
 import local.jarios.encryptor.exception.EncryptorException;
+import local.jarios.encryptor.helpers.StringHelper;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jasypt.util.text.BasicTextEncryptor;
 
 /**
@@ -22,37 +24,42 @@ import org.jasypt.util.text.BasicTextEncryptor;
  * @since 1.0.0
  */
 @Getter
-@Slf4j
 public class EncryptorServiceImpl implements EncryptorService {
+
+    /**
+     * Instancia única (singleton) del gestor de propiedades.
+     * Inicialización temprana y thread-safe mediante static final.
+     */
+    private static final Logger LOGGER = LogManager.getLogger("local.jarios.encrypt");
 
     /**
      * Clave maestra por defecto usada para cifrar/descifrar si no se proporciona una personalizada.
      * -- GETTER --
      *  Devuelve la clave por defecto actual configurada.
      */
-    private String defaultKey;
+    private String encryptKey;
 
     /**
      * Constructor vacío
      */
     public EncryptorServiceImpl() {
-        defaultKey = Constantes.DEFAULT_SECRET_KEY;
+        encryptKey = Constantes.DEFAULT_SECRET_KEY;
     }
 
 
     /**
      * Establece la clave por defecto para operaciones de cifrado/descifrado.
      *
-     * @param defaultKey nueva clave por defecto (no puede ser nula ni vacía)
+     * @param encryptKey nueva clave por defecto (no puede ser nula ni vacía)
      * @throws EncryptorException si la clave es nula o vacía
      */
-    @Override
-    public void setDefaultKey(String defaultKey) throws EncryptorException {
-        if (defaultKey == null || defaultKey.isBlank()) {
-            throw new EncryptorException("La clave por defecto no puede ser nula ni vacía.");
+    public void setEncryptKey(String encryptKey) throws EncryptorException {
+
+        if (StringHelper.isInvalidString(encryptKey)) {
+            throw new EncryptorException("[setDefaultKey] - La clave por defecto no puede ser nula ni vacía.");
         }
-        this.defaultKey = defaultKey;
-        log.debug("Clave por defecto actualizada.");
+        this.encryptKey = encryptKey;
+        LOGGER.debug("[setDefaultKey] - Clave por defecto actualizada.");
     }
 
     /**
@@ -62,9 +69,11 @@ public class EncryptorServiceImpl implements EncryptorService {
      * @return texto cifrado en Base64
      * @throws EncryptorException si el texto es nulo o ocurre un error
      */
-    @Override
-    public String encrypt(String plainText) {
-        return encrypt(plainText, null);
+    public String encryptDefaultKey(String plainText) {
+
+        String encryptedText = encrypt(plainText, encryptKey);
+        LOGGER.debug("[encryptDefaultKey] - Encriptando el texto: '{}' utilizando como key: {}.", encryptedText, encryptKey);
+        return encryptedText;
     }
 
     /**
@@ -77,18 +86,35 @@ public class EncryptorServiceImpl implements EncryptorService {
      */
     @Override
     public String encrypt(String plainText, String key) throws EncryptorException {
-        if (plainText == null) {
-            throw new EncryptorException("El texto a cifrar no puede ser null.");
+
+        if (StringHelper.isInvalidString(plainText)) {
+            String msg = "[encrypt] - El texto a cifrar es NULL | BLANK.";
+            LOGGER.error(msg);
+            throw new EncryptorException(msg);
         }
-        String finalKey = resolveKey(key);
+
+        if (StringHelper.isInvalidString(key)) {
+            String msg = "[encrypt] - La clave para cifrar es NULL | BLANK.";
+            LOGGER.error(msg);
+            throw new EncryptorException(msg);
+        }
+
         try {
-            log.debug("Cifrando texto...");
+
             BasicTextEncryptor encryptor = new BasicTextEncryptor();
-            encryptor.setPassword(finalKey);
-            return encryptor.encrypt(plainText);
-        } catch (Exception e) {
-            log.error("Error durante el cifrado", e);
-            throw new EncryptorException("Error cifrando el texto", e);
+            LOGGER.debug("[encrypt] - Creado el objeto BasicTextEncryptor correctamente.");
+            encryptor.setPassword(key);
+            LOGGER.debug("[encrypt] - Establecida la clave de cifrado correctamente.");
+            String encryptText = encryptor.encrypt(plainText);
+            LOGGER.debug("[encrypt] - Texto cifrado correctamente. Texto: '{}'", encryptText);
+            return encryptText;
+
+        } catch (Exception ex) {
+
+            String msg = String.format("[encrypt] - Error durante el cifrado. Error: %s", ex.getMessage());
+            LOGGER.error(msg, ex);
+            throw new EncryptorException(msg, ex);
+
         }
     }
 
@@ -99,10 +125,17 @@ public class EncryptorServiceImpl implements EncryptorService {
      * @return texto plano descifrado
      * @throws EncryptorException si ocurre un error o el texto es nulo
      */
-    @Override
-    public String decrypt(String encryptedText) {
+    public String decryptDefaultKey(String encryptedText) {
 
-        return decrypt(encryptedText, null);
+        if (StringHelper.isInvalidString(encryptedText)) {
+            String msg = "[decryptDefaultKey] - El texto a descifrar es NULL | BLANK.";
+            LOGGER.error(msg);
+            throw new EncryptorException(msg);
+        }
+
+        String plainText =  decrypt(encryptedText, encryptKey);
+        LOGGER.error("[decryptDefaultKey] - Texto descifrado correctamente. Texto: '{}'.", plainText);
+        return plainText;
     }
 
     /**
@@ -115,28 +148,35 @@ public class EncryptorServiceImpl implements EncryptorService {
      */
     @Override
     public String decrypt(String encryptedText, String key) throws EncryptorException {
-        if (encryptedText == null) {
-            throw new EncryptorException("El texto a descifrar no puede ser null.");
-        }
-        String finalKey = resolveKey(key);
-        try {
-            log.debug("Descifrando texto...");
-            BasicTextEncryptor encryptor = new BasicTextEncryptor();
-            encryptor.setPassword(finalKey);
-            return encryptor.decrypt(encryptedText);
-        } catch (Exception e) {
-            log.error("Error durante el descifrado", e);
-            throw new EncryptorException("Error descifrando el texto", e);
-        }
-    }
 
-    /**
-     * Determina la clave a utilizar en operaciones de cifrado/descifrado.
-     *
-     * @param providedKey clave proporcionada
-     * @return clave efectiva (personalizada o por defecto)
-     */
-    private String resolveKey(String providedKey) {
-        return (providedKey == null || providedKey.isBlank()) ? defaultKey : providedKey;
+        if (StringHelper.isInvalidString(encryptedText)) {
+            String msg = "[decrypt] - El texto a descifrar es NULL | BLANK.";
+            LOGGER.error(msg);
+            throw new EncryptorException(msg);
+        }
+
+        if (StringHelper.isInvalidString(key)) {
+            String msg = "[decrypt] - La clave para cifrar es NULL | BLANK.";
+            LOGGER.error(msg);
+            throw new EncryptorException(msg);
+        }
+
+        try {
+
+            BasicTextEncryptor encryptor = new BasicTextEncryptor();
+            LOGGER.debug("[decrypt] - Creado el objeto BasicTextEncryptor correctamente.");
+            encryptor.setPassword(key);
+            LOGGER.debug("[decrypt] - Establecida la clave de cifrado correctamente.");
+            String plainText = encryptor.decrypt(encryptedText);
+            LOGGER.debug("[decrypt] - Texto descifrado correctamente. Texto: '{}'", plainText);
+            return plainText;
+
+        } catch (Exception ex) {
+
+            String msg = String.format("[decrypt] - Error durante el descifrado. Error: %s", ex.getMessage());
+            LOGGER.error(msg, ex);
+            throw new EncryptorException(msg, ex);
+
+        }
     }
 }
