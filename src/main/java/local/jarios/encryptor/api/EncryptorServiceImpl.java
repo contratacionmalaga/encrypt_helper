@@ -56,7 +56,9 @@ public class EncryptorServiceImpl implements EncryptorService {
     public void setEncryptKey(String encryptKey) throws EncryptorException {
 
         if (StringHelper.isInvalidString(encryptKey)) {
-            throw new EncryptorException("[setDefaultKey] - La clave por defecto no puede ser nula ni vacía.");
+            String msg = "[setDefaultKey] - El valor de la clave no puede ser NULL | BLANCK.";
+            LOGGER.debug(msg);
+            throw new EncryptorException(msg);
         }
         this.encryptKey = encryptKey;
         LOGGER.debug("[setDefaultKey] - Clave por defecto actualizada.");

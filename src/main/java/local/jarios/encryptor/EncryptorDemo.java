@@ -64,7 +64,7 @@ public class EncryptorDemo {
         } else {
             claveMaestra = encryptorService.getEncryptKey();
             textoOriginal = TEXTO_ORIGINAL_DEFAULT;
-            log.info("No se recibieron parámetros válidos. Usando valores por defecto.");
+            log.info("El número de parámetros es distinto de 2. Se utilizarán valores por defecto.");
             log.info("Clave maestra por defecto: {}", claveMaestra);
             log.info("Texto original por defecto: {}", textoOriginal);
         }
@@ -102,7 +102,6 @@ public class EncryptorDemo {
 
         } catch (EncryptorException ex) {
 
-            LOGGER.error("Error en las operaciones sobre ficheros properties. Mensaje: {}", ex.getMessage(), ex);
             FinalDelProgramaHelper.finalizar(TipoFinalEjecucion.ERROR);
 
         }
