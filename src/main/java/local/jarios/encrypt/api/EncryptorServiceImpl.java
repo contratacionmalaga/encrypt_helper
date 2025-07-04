@@ -56,7 +56,7 @@ public class EncryptorServiceImpl implements EncryptorService {
     public void setEncryptKey(String encryptKey) throws EncryptorException {
 
         if (StringHelper.isInvalidString(encryptKey)) {
-            String msg = "[setDefaultKey] - El valor de la clave no puede ser NULL | BLANCK.";
+            String msg = "[setDefaultKey] - El valor de la clave no puede ser NULL o BLANK.";
             LOGGER.debug(msg);
             throw new EncryptorException(msg);
         }
@@ -65,7 +65,8 @@ public class EncryptorServiceImpl implements EncryptorService {
     }
 
     /**
-     * Cifra el texto utilizando la clave por defecto.
+     * Cifra el texto utilizando la clave establecida. En caso de haber establecido clave se encritpa con la clave
+     *      por defecto establecida en la constante DEFAULT_SECRET_KEY
      *
      * @param plainText texto a cifrar
      * @return texto cifrado en Base64
@@ -73,8 +74,12 @@ public class EncryptorServiceImpl implements EncryptorService {
      */
     public String encryptDefaultKey(String plainText) {
 
+
         String encryptedText = encrypt(plainText, encryptKey);
-        LOGGER.debug("[encryptDefaultKey] - Encriptando el texto: '{}' utilizando como key: {}.", encryptedText, encryptKey);
+        LOGGER.debug(
+                "[encryptDefaultKey] - Encriptando el texto: '{}' utilizando como key: {}.",
+                encryptedText,
+                encryptKey);
         return encryptedText;
     }
 
