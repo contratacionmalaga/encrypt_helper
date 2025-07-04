@@ -1,6 +1,6 @@
-package local.jarios.encryptor.api;
+package local.jarios.encrypt.api;
 
-import local.jarios.encryptor.exception.EncryptorException;
+import local.jarios.encrypt.exception.EncryptorException;
 
 /**
  * Servicio de cifrado y descifrado de texto.

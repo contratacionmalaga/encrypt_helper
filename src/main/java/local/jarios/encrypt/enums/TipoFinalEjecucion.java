@@ -1,4 +1,4 @@
-package local.jarios.encryptor.enums;
+package local.jarios.encrypt.enums;
 
 import lombok.extern.slf4j.Slf4j;
 

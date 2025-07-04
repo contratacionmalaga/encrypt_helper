@@ -1,4 +1,4 @@
-package local.jarios.encryptor.common.util;
+package local.jarios.encrypt.common.util;
 
 /**
  * Clase que contiene constantes generales utilizadas a lo largo de la aplicación.

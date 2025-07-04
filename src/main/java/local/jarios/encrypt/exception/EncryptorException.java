@@ -1,4 +1,4 @@
-package local.jarios.encryptor.exception;
+package local.jarios.encrypt.exception;
 
 /**
  * Excepción personalizada que representa errores durante el cifrado o descifrado.

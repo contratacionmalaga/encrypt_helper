@@ -1,4 +1,4 @@
-package local.jarios.encryptor.helpers;
+package local.jarios.encrypt.helpers;
 
 /**
  * Ayudante de los String

@@ -1,8 +1,8 @@
-package local.jarios.encryptor.api;
+package local.jarios.encrypt.api;
 
-import local.jarios.encryptor.common.util.Constantes;
-import local.jarios.encryptor.exception.EncryptorException;
-import local.jarios.encryptor.helpers.StringHelper;
+import local.jarios.encrypt.common.util.Constantes;
+import local.jarios.encrypt.exception.EncryptorException;
+import local.jarios.encrypt.helpers.StringHelper;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -1,4 +1,4 @@
-package local.jarios.encryptor.common.util;
+package local.jarios.encrypt.common.util;
 
 /**
  * Clase final que contiene constantes de mensajes estáticos
