@@ -20,7 +20,7 @@
         <connection>scm:git:https://github.com/contratacionmalaga/encrypt_helper.git</connection>
         <developerConnection>scm:git:git@github.com:contratacionmalaga/encrypt_helper.git</developerConnection>
         <url>https://github.com/contratacionmalaga/encrypt_helper</url>
-        <tag>HEAD</tag>
+        <tag>v2.1.0</tag>
     </scm>
 
     <distributionManagement>
