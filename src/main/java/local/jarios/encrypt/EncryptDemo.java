@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
  * </p>
  */
 @Slf4j
-public class EncryptorDemo {
+public class EncryptDemo {
 
     /**
      * LOGGER del componente
@@ -34,7 +34,7 @@ public class EncryptorDemo {
      * Constructor por defecto.
      * Esta clase solo contiene el método main, no se debe instanciar.
      */
-    public EncryptorDemo() {
+    public EncryptDemo() {
         // Constructor vacío
     }
 
