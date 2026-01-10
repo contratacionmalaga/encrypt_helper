@@ -7,8 +7,6 @@ import local.jarios.encrypt.enums.TipoFinalEjecucion;
 import local.jarios.encrypt.exception.EncryptorException;
 import local.jarios.encrypt.helpers.FinalDelProgramaHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Clase principal para ejecutar el cifrado y descifrado desde línea de comandos.
@@ -19,11 +17,6 @@ import org.apache.logging.log4j.Logger;
  */
 @Slf4j
 public class EncryptDemo {
-
-    /**
-     * LOGGER del componente
-     */
-    private static final Logger LOGGER = LogManager.getLogger("local.jarios.encryptor");
 
     /**
      * Texto original por defecto para cifrar si no se pasa argumento.
@@ -46,7 +39,7 @@ public class EncryptDemo {
     public static void main(String[] args) {
 
         // Inicio del log
-        LOGGER.info(Mensajes.INICIO);
+        log.info(Mensajes.INICIO);
 
         EncryptorService encryptorService = new EncryptorServiceImpl();
         log.info("Servicio Encryptor creado correctamente.");

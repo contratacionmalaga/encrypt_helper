@@ -1,47 +1,45 @@
 package local.jarios.encrypt.helpers;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * Ayudante de los String
- * @author Juan Antonio
+ * Clase utilitaria para validación y manipulación de {@link String}.
+ * <p>
+ * Proporciona métodos estáticos para comprobar si una cadena es nula o vacía.
+ * No se debe instanciar.
+ * </p>
+ *
+ * Autor: Juan Antonio
  */
+@Slf4j
 public final class StringHelper {
 
     /**
-     * Instancia única (singleton) del gestor de propiedades.
-     * Inicialización temprana y thread-safe mediante static final.
-     */
-    private static final Logger LOGGER = LogManager.getLogger("local.jarios.encrypt");
-
-    /**
-     * Constructro privado de la clase -- Evita es instanciamiento
+     * Constructor privado para evitar instanciación.
      */
     private StringHelper() {
-
-        // Constructor vacío
+        log.debug("[Constructor] - StringHelper no puede ser instanciado.");
     }
 
     /**
-     * Validador de cadena
-     * @param cadena a validar
-     * @return booleano indicando si la cadena es válida o no
+     * Valida si una cadena es nula o está vacía (blank).
+     *
+     * @param cadena Cadena a validar
+     * @return {@code true} si la cadena es nula o blank, {@code false} en caso contrario
      */
     public static boolean isInvalidString(String cadena) {
 
         if (cadena == null) {
-            LOGGER.debug("[isInvalidString] - La cadena es NULL. Cadena: {}", cadena);
+            log.debug("[isInvalidString] - La cadena es NULL.");
             return true;
         }
 
         if (cadena.isBlank()) {
-            LOGGER.debug("[isInvalidString] - La cadena es BLANK. Cadena: {}", cadena);
+            log.debug("[isInvalidString] - La cadena es BLANK.");
             return true;
         }
 
-        LOGGER.debug("[isInvalidString] - La cadena no es NULL ni BLANK. Cadena: {}", cadena);
+        log.debug("[isInvalidString] - La cadena es válida. Cadena: '{}'", cadena);
         return false;
-
     }
 }
