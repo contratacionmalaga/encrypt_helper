@@ -1,6 +1,6 @@
 # Changelog
 
-## 5.2.0 - Actuacion de auditoria 2026-05-09
+## 6.0.0 - Actuacion de auditoria 2026-05-09
 
 ### Seguridad
 
