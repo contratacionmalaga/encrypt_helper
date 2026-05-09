@@ -10,20 +10,20 @@
     <description>Encriptar / Desencriptar claves de forma sencilla</description>
 
     <scm>
-        <connection>scm:git:https://github.com/contratacionmalaga/encryptor.git</connection>
-        <developerConnection>scm:git:git@github.com:contratacionmalaga/encryptor.git</developerConnection>
-        <url>https://github.com/contratacionmalaga/encryptor</url>
+        <connection>scm:git:https://github.com/contratacionmalaga/encrypt_helper.git</connection>
+        <developerConnection>scm:git:git@github.com:contratacionmalaga/encrypt_helper.git</developerConnection>
+        <url>https://github.com/contratacionmalaga/encrypt_helper</url>
         <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
         <repository>
             <id>github</id>
-            <url>https://maven.pkg.github.com/contratacionmalaga/encryptor</url>
+            <url>https://maven.pkg.github.com/contratacionmalaga/encrypt_helper</url>
         </repository>
         <snapshotRepository>
             <id>github</id>
-            <url>https://maven.pkg.github.com/contratacionmalaga/encryptor</url>
+            <url>https://maven.pkg.github.com/contratacionmalaga/encrypt_helper</url>
         </snapshotRepository>
     </distributionManagement>
 
