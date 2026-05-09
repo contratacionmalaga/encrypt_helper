@@ -4,7 +4,7 @@ import local.jarios.encrypt.exception.EncryptorException;
 
 /**
  * Servicio de cifrado y descifrado de texto.
- * Permite operar con una clave maestra definida por defecto o pasada en cada llamada.
+ * Permite operar con una clave configurada externamente o pasada en cada llamada.
  *
  * @author Juan
  * @since 1.0.0
@@ -15,8 +15,9 @@ public interface EncryptorService {
      * Establece la clave por defecto que se usará si no se proporciona una explícita.
      *
      * @param encryptKey clave maestra por defecto (no puede ser nula o vacía)
+     * @throws EncryptorException si la clave es nula o vacía
      */
-    void setEncryptKey(String encryptKey);
+    void setEncryptKey(String encryptKey) throws EncryptorException;
 
     /**
      * Devuelve la clave de encriptación
@@ -30,8 +31,9 @@ public interface EncryptorService {
      *
      * @param plainText texto plano a cifrar
      * @return texto cifrado en Base64
+     * @throws EncryptorException si el texto es inválido o no hay clave configurada
      */
-    String encryptDefaultKey(String plainText);
+    String encryptDefaultKey(String plainText) throws EncryptorException;
 
     /**
      * Cifra el texto usando una clave personalizada.
@@ -47,8 +49,9 @@ public interface EncryptorService {
      *
      * @param encryptedText texto cifrado en Base64
      * @return texto descifrado
+     * @throws EncryptorException si el texto es inválido o no hay clave configurada
      */
-    String decryptDefaultKey(String encryptedText);
+    String decryptDefaultKey(String encryptedText) throws EncryptorException;
 
     /**
      * Descifra el texto cifrado usando una clave personalizada.

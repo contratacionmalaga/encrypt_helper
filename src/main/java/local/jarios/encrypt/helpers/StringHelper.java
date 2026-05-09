@@ -39,7 +39,7 @@ public final class StringHelper {
             return true;
         }
 
-        log.debug("[isInvalidString] - La cadena es válida. Cadena: '{}'", cadena);
+        log.debug("[isInvalidString] - La cadena es válida.");
         return false;
     }
 }
