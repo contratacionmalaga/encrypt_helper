@@ -1,134 +1,86 @@
-# Encryptor
+# encrypt-helper
 
-Servicio Java para encriptar y desencriptar claves usando una clave maestra, pensado para almacenar valores seguros en ficheros `.properties` o cualquier otro sistema que requiera almacenamiento seguro de texto.
+Librería Java para cifrar y descifrar texto mediante una clave proporcionada por la aplicación consumidora.
 
----
+## Requisitos
 
-## Características principales
+- Java 21.
+- Maven 3.6.3 o superior.
 
-- **Encriptación** y **desencriptación** de texto con contraseña (clave maestra).
-- Utiliza [`org.jasypt.util.text.BasicTextEncryptor`](https://www.jasypt.org/api/jasypt/1.9.3/org/jasypt/util/text/BasicTextEncryptor.html) para cifrado.
-- Los textos cifrados se codifican en Base64 para fácil almacenamiento.
-- Excepciones personalizadas para errores de cifrado (`EncryptorException`).
-- Logging con [SLF4J](https://www.slf4j.org/) para seguimiento y auditoría.
-- Test unitarios con JUnit 5 para garantizar la calidad del código.
-- Fácil integración en otros proyectos como dependencia Maven.
-- Preparado para publicación en GitHub Packages.
----
-# Requisitos para su funcionamiento
-- Java 8 o superior
-- Biblioteca Jasypt (dependencia Maven)
-- Biblioteca Lombok (para anotaciones @Slf4j, @Getter)
-````
-<dependency>
-    <groupId>org.jasypt</groupId>
-    <artifactId>jasypt</artifactId>
-    <version>1.9.3</version>
-</dependency>
-````
---
-### Dependencia Maven
-Agrega esta dependencia en tu `pom.xml`:
+## Dependencia Maven
+
 ```xml
 <dependency>
     <groupId>local.jarios</groupId>
-    <artifactId>encryptorService</artifactId>
-    <version>1.0.3</version>
+    <artifactId>encrypt-helper</artifactId>
+    <version>5.2.0</version>
 </dependency>
 ```
---
-# Crear una instanacia del servicio
 
-```
-Encryptor encryptorService = new EncryptorImpl();
-```
---
-# Configurar la clave por defecto
+La librería expone `slf4j-api`, pero no fuerza una implementación de logging en tiempo de ejecución. La aplicación consumidora debe proporcionar la implementación que corresponda.
 
-```
-encryptorService.setDefaultKey("MiClaveSegura2025");
-```
---
-# Cifrar texto con clave por defecto
+## Uso básico
 
-```
-String textoPlano = "Mi secreto";
-String textoCifrado = encryptorService.encrypt(textoPlano);
-```
---
-# Cifrar texto con clave personalizada
-```
-String clavePersonalizada = "ClaveDiferente!";
-String textoCifrado = encryptorService.encrypt(textoPlano, clavePersonalizada);
-```
---
-# Descifrar texto con clave por defecto
-```
-String textoDescifrado = encryptorService.decrypt(textoCifrado);
-```
---
-# Descifrar texto con clave personalizada
-```
-String textoDescifrado = encryptorService.decrypt(textoCifrado, clavePersonalizada);
-```
---
-# Ejemplo completo
-````
+Configura siempre la clave desde una fuente externa y segura. No guardes claves reales en el código fuente.
+
+```java
+import local.jarios.encrypt.api.EncryptorService;
+import local.jarios.encrypt.api.EncryptorServiceImpl;
+
+public class EjemploEncryptHelper {
+
     public static void main(String[] args) {
+        String clave = System.getenv("ENCRYPT_HELPER_KEY");
+        String textoPlano = "texto sensible";
 
-        Encryptor encryptorService = new EncryptorImpl();
-        log.info("Servicio Encryptor creado correctamente.");
+        EncryptorService encryptorService = new EncryptorServiceImpl(clave);
 
-        // Muestra clave por defecto inicial
-        log.info("Clave por defecto inicial: {}", encryptorService.getDefaultKey());
-
-        String claveMaestra;
-        String textoOriginal;
-
-        if (args.length == 2) {
-            claveMaestra = args[0];
-            textoOriginal = args[1];
-            log.info("Parámetros recibidos: clave maestra oculta, texto original: {}", textoOriginal);
-        } else {
-            claveMaestra = encryptorService.getDefaultKey();
-            textoOriginal = TEXTO_ORIGINAL_DEFAULT;
-            log.info("No se recibieron parámetros válidos. Usando valores por defecto.");
-            log.info("Clave maestra por defecto: {}", claveMaestra);
-            log.info("Texto original por defecto: {}", textoOriginal);
-        }
-
-        try {
-            // Cambiamos la clave por defecto a la clave recibida (o la que ya tenía)
-            encryptorService.setDefaultKey(claveMaestra);
-            log.info("Clave por defecto configurada a: {}", encryptorService.getDefaultKey());
-
-            // CIFRADO usando clave por defecto (sin pasar la clave explícita)
-            String cifradoConClaveDefecto = encryptorService.encrypt(textoOriginal);
-            log.info("Texto cifrado usando clave por defecto: {}", cifradoConClaveDefecto);
-
-            // CIFRADO usando clave personalizada (pasándola explícitamente)
-            String cifradoConClavePersonalizada = encryptorService.encrypt(textoOriginal, claveMaestra);
-            log.info("Texto cifrado usando clave personalizada: {}", cifradoConClavePersonalizada);
-
-            // DESCIFRADO usando clave por defecto
-            String descifradoConClaveDefecto = encryptorService.decrypt(cifradoConClaveDefecto);
-            log.info("Texto descifrado usando clave por defecto: {}", descifradoConClaveDefecto);
-
-            // DESCIFRADO usando clave personalizada
-            String descifradoConClavePersonalizada = encryptorService.decrypt(cifradoConClavePersonalizada, claveMaestra);
-            log.info("Texto descifrado usando clave personalizada: {}", descifradoConClavePersonalizada);
-
-            // Prueba de envoltorio "ENC(...)"
-            String envoltorio = String.format("ENC(%s)", cifradoConClaveDefecto);
-            log.info("Texto cifrado con envoltorio: {}", envoltorio);
-
-            // Extraemos el texto cifrado del envoltorio y lo desciframos
-            String cifradoSinEnvoltorio = envoltorio.substring(4, envoltorio.length() - 1);
-            String descifradoDesdeEnvoltorio = encryptorService.decrypt(cifradoSinEnvoltorio);
-            log.info("Texto descifrado desde envoltorio usando clave por defecto: {}", descifradoDesdeEnvoltorio);
-
-        } catch (Exception e) {
-            log.error("Error en cifrado/descifrado", e);
-        }
+        String textoCifrado = encryptorService.encryptDefaultKey(textoPlano);
+        String textoDescifrado = encryptorService.decryptDefaultKey(textoCifrado);
     }
-````
+}
+```
+
+También puedes pasar una clave explícita en cada operación:
+
+```java
+EncryptorService encryptorService = new EncryptorServiceImpl();
+
+String textoCifrado = encryptorService.encrypt("texto sensible", clave);
+String textoDescifrado = encryptorService.decrypt(textoCifrado, clave);
+```
+
+## API principal
+
+- `new EncryptorServiceImpl()`: crea el servicio sin clave configurada.
+- `new EncryptorServiceImpl(String encryptKey)`: crea el servicio con clave configurada.
+- `setEncryptKey(String encryptKey)`: configura la clave por defecto.
+- `getEncryptKey()`: devuelve la clave configurada.
+- `encryptDefaultKey(String plainText)`: cifra con la clave configurada.
+- `decryptDefaultKey(String encryptedText)`: descifra con la clave configurada.
+- `encrypt(String plainText, String key)`: cifra con una clave explícita.
+- `decrypt(String encryptedText, String key)`: descifra con una clave explícita.
+
+Si se llama a `encryptDefaultKey` o `decryptDefaultKey` sin haber configurado una clave, se lanza `EncryptorException`.
+
+## Seguridad operativa
+
+- No uses claves hardcodeadas.
+- No registres claves, textos planos ni textos descifrados en logs.
+- Proporciona la clave desde un gestor de secretos, variable de entorno o configuración protegida.
+- Rota las claves según la política de seguridad de la aplicación consumidora.
+- Si ya existen datos cifrados con versiones anteriores, valida la compatibilidad antes de cambiar el algoritmo o formato.
+
+## Verificación
+
+```bash
+./mvnw test
+./mvnw verify
+./mvnw -Pquality verify
+```
+
+El perfil `quality` ejecuta herramientas de análisis estático configuradas en el `pom.xml`.
+
+## Estado criptográfico
+
+La implementación actual usa `org.jasypt.util.text.BasicTextEncryptor` de Jasypt 1.9.3. Antes de usar la librería para secretos productivos de alto impacto, revisa si sus parámetros criptográficos cumplen los requisitos de tu organización y define un plan de migración para futuros cambios de formato.

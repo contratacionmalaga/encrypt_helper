@@ -1,6 +1,5 @@
 package local.jarios.encrypt.api;
 
-import local.jarios.encrypt.common.util.Constantes;
 import local.jarios.encrypt.exception.EncryptorException;
 import local.jarios.encrypt.helpers.StringHelper;
 import lombok.Getter;
@@ -14,7 +13,7 @@ import org.jasypt.util.text.BasicTextEncryptor;
  * <ul>
  *   <li>Cifrar texto plano con una clave proporcionada o por defecto</li>
  *   <li>Descifrar texto cifrado en Base64</li>
- *   <li>Configurar y recuperar una clave por defecto</li>
+ *   <li>Configurar y recuperar una clave por defecto proporcionada externamente</li>
  * </ul>
  * <p>
  * Internamente utiliza {@link BasicTextEncryptor} de Jasypt para operaciones simétricas.
@@ -23,14 +22,24 @@ import org.jasypt.util.text.BasicTextEncryptor;
  */
 @Getter
 @Slf4j
-public class EncryptorServiceImpl implements EncryptorService {
+public final class EncryptorServiceImpl implements EncryptorService {
 
     /** Clave por defecto usada para cifrado/descifrado. */
     private String encryptKey;
 
-    /** Constructor por defecto que inicializa la clave por defecto. */
+    /** Constructor por defecto. La clave debe configurarse explicitamente antes de usar los metodos por defecto. */
     public EncryptorServiceImpl() {
-        this.encryptKey = Constantes.DEFAULT_SECRET_KEY;
+        this.encryptKey = null;
+    }
+
+    /**
+     * Constructor que configura la clave de cifrado de forma explicita.
+     *
+     * @param encryptKey clave de cifrado
+     * @throws EncryptorException si la clave es nula o vacia
+     */
+    public EncryptorServiceImpl(String encryptKey) throws EncryptorException {
+        setEncryptKey(encryptKey);
     }
 
     /**
@@ -39,6 +48,7 @@ public class EncryptorServiceImpl implements EncryptorService {
      * @param encryptKey nueva clave
      * @throws EncryptorException si la clave es nula o vacía
      */
+    @Override
     public void setEncryptKey(String encryptKey) throws EncryptorException {
         if (StringHelper.isInvalidString(encryptKey)) {
             String msg = "Clave nula o vacía no permitida.";
@@ -56,8 +66,10 @@ public class EncryptorServiceImpl implements EncryptorService {
      * @return texto cifrado en Base64
      * @throws EncryptorException si el texto es nulo o vacío
      */
+    @Override
     public String encryptDefaultKey(String plainText) throws EncryptorException {
-        String encryptedText = encrypt(plainText, encryptKey);
+        ensureEncryptKeyConfigured();
+        String encryptedText = encrypt(plainText, this.encryptKey);
         log.debug("Texto cifrado con clave por defecto correctamente.");
         return encryptedText;
     }
@@ -84,17 +96,18 @@ public class EncryptorServiceImpl implements EncryptorService {
         }
 
         try {
-            log.info("Inicio del proceso de encritptación.");
+            log.info("Inicio del proceso de encriptación.");
             BasicTextEncryptor encryptor = new BasicTextEncryptor();
             encryptor.setPassword(key);
 
             String encryptedText = encryptor.encrypt(plainText);
-            log.info("Texto encriptado correctamente.");
+            log.info("Texto cifrado correctamente.");
             return encryptedText;
 
         } catch (Exception ex) {
-            String msg = "Error inesperado durante el proceso de encriptación.";
-            log.error(msg, ex);
+            String msg = "Error inesperado durante el proceso de cifrado.";
+            log.error(msg);
+            log.debug(msg, ex);
             throw new EncryptorException(msg, ex);
         }
     }
@@ -106,8 +119,10 @@ public class EncryptorServiceImpl implements EncryptorService {
      * @return texto plano descifrado
      * @throws EncryptorException si el texto es nulo o ocurre un error
      */
+    @Override
     public String decryptDefaultKey(String encryptedText) throws EncryptorException {
-        String plainText = decrypt(encryptedText, encryptKey);
+        ensureEncryptKeyConfigured();
+        String plainText = decrypt(encryptedText, this.encryptKey);
         log.debug("Texto descifrado correctamente");
         return plainText;
     }
@@ -144,8 +159,17 @@ public class EncryptorServiceImpl implements EncryptorService {
 
         } catch (Exception ex) {
             String msg = "Error inesperado durante el proceso de descifrado.";
-            log.error(msg, ex);
+            log.error(msg);
+            log.debug(msg, ex);
             throw new EncryptorException(msg, ex);
+        }
+    }
+
+    private void ensureEncryptKeyConfigured() throws EncryptorException {
+        if (StringHelper.isInvalidString(this.encryptKey)) {
+            String msg = "Clave por defecto no configurada.";
+            log.error(msg);
+            throw new EncryptorException(msg);
         }
     }
 }
