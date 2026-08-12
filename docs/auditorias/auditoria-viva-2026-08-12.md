@@ -4,8 +4,8 @@ Fecha de creacion: 2026-08-12
 Ultima revision: 2026-08-12
 Proyecto: `local.jarios:encrypt-helper`
 Version auditada inicialmente: `6.0.0`
-Version preparada tras aplicar hitos: `7.0.0`
-Rama de aplicacion: `jarp/aplicar-auditoria-viva`
+Version definitiva preparada: `7.0.1`
+Rama principal activa: `main`
 Commit base inicial: `6c5e47b Subir version a 6.0.0`
 
 ## Como mantener viva esta auditoria
@@ -22,11 +22,11 @@ Estados permitidos: `Pendiente`, `En curso`, `Bloqueado`, `Hecho`, `Aceptado con
 
 ## Resumen ejecutivo actualizado
 
-La auditoria viva se ha aplicado sobre una rama nueva con prefijo solicitado `jarp/`. El proyecto queda preparado como version `7.0.0` porque se han introducido cambios incompatibles de API y formato criptografico.
+La auditoria viva se aplico inicialmente sobre ramas `jarp/*` y queda consolidada en `main` como version definitiva `7.0.1`. La version mayor `7.0.0` introdujo cambios incompatibles de API y formato criptografico; `7.0.1` consolida CI/CD, limpieza de ramas y publicacion definitiva en GitHub.
 
 El riesgo global baja de **Medio/Alto** a **Medio-bajo** para uso interno controlado. Los nuevos cifrados usan formato versionado `EH2(...)` con AES-GCM y PBKDF2-HMAC-SHA256, y el descifrado mantiene compatibilidad con textos Jasypt legados sin prefijo. La API ya no expone la clave configurada.
 
-El riesgo residual principal queda en la dependencia de lectura legada con Jasypt y en la actualizacion del JDK instalado localmente, que es una accion externa al repositorio.
+El riesgo residual principal queda en la dependencia de lectura legada con Jasypt y en la actualizacion del JDK instalado localmente, que es una accion externa al repositorio. La estructura de ramas queda profesionalizada dejando `main` como unica rama activa y usando tags para releases.
 
 ## Evidencias verificadas
 
@@ -64,6 +64,7 @@ El riesgo residual principal queda en la dependencia de lectura legada con Jasyp
 | CI | Unico build `./mvnw -B -Pquality clean verify` |
 | Release | `./mvnw -B -Pquality clean deploy` antes de publicar artefactos |
 | GitHub Actions runtime | `actions/checkout@v7` y `actions/setup-java@v5`, compatibles con Node 24 |
+| Ramas activas en GitHub | Solo `main`; ramas de trabajo mergeadas eliminadas |
 
 ## Hallazgos actualizados
 
@@ -208,6 +209,7 @@ Los workflows usaban `actions/checkout@v4` y `actions/setup-java@v4`, que GitHub
 | AV-11 | Revisar release para publicar exactamente artefactos verificados | P3 | Hecho | Release ejecuta `clean deploy` con `quality` | 2026-08-12 |
 | AV-12 | Evaluar retirada de Lombok | P3 | Hecho | Lombok retirado de POM y codigo | 2026-08-12 |
 | AV-13 | Migrar GitHub Actions de Node 20/deprecadas a majors compatibles con Node 24 | P2 | Hecho | `actions/checkout@v7`, `actions/setup-java@v5` | 2026-08-12 |
+| AV-14 | Podar ramas mergeadas y dejar estructura profesional de ramas | P2 | Hecho | GitHub conserva solo `main`; releases mediante tags | 2026-08-12 |
 
 ## Riesgo por area actualizado
 
@@ -221,6 +223,7 @@ Los workflows usaban `actions/checkout@v4` y `actions/setup-java@v4`, que GitHub
 | Dependencias | Bajo-medio | Updates estables aplicados; Jasypt queda por compatibilidad legado |
 | Documentacion | Bajo | README, changelog y ADR actualizados |
 | CI/CD | Bajo | CI y release verifican calidad antes de publicar; acciones oficiales migradas a majors compatibles con Node 24 |
+| Estructura de ramas | Bajo | GitHub queda con `main` como unica rama activa; trabajo futuro mediante ramas `jarp/*` y PR |
 
 ## Comandos de mantenimiento
 
@@ -257,3 +260,4 @@ Los workflows usaban `actions/checkout@v4` y `actions/setup-java@v4`, que GitHub
 - 2026-08-12: AV-10 y AV-11 cerrados ajustando CI y release.
 - 2026-08-12: AV-12 cerrado retirando Lombok.
 - 2026-08-12: AV-13 cerrado migrando acciones oficiales de GitHub a majors compatibles con Node 24.
+- 2026-08-12: AV-14 cerrado podando ramas mergeadas y dejando `main` como unica rama activa en GitHub.
