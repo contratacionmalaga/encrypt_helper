@@ -1,5 +1,21 @@
 # Changelog
 
+## 7.0.1 - Release definitiva GitHub 2026-08-12
+
+### CI/CD
+
+- Migradas las acciones oficiales de GitHub a majors compatibles con Node 24: `actions/checkout@v7` y `actions/setup-java@v5`.
+- Eliminados avisos no bloqueantes de runtime Node 20 y deprecacion de `setup-java@v4`.
+- Podadas ramas de trabajo ya mergeadas para dejar `main` como unica rama activa del repositorio.
+
+### Documentacion
+
+- Auditoria viva actualizada con el hito `AV-13`.
+- Corregida la tabla de evidencias de la auditoria viva.
+
+### Compatibilidad
+
+- Sin cambios de API ni de formato respecto a `7.0.0`.
 ## 7.0.0 - Aplicacion de auditoria viva 2026-08-12
 
 ### Seguridad

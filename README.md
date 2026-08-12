@@ -14,7 +14,7 @@ Libreria Java para cifrar y descifrar texto mediante una clave proporcionada por
 <dependency>
   <groupId>local.jarios</groupId>
   <artifactId>encrypt-helper</artifactId>
-  <version>7.0.0</version>
+  <version>7.0.1</version>
 </dependency>
 ```
 
