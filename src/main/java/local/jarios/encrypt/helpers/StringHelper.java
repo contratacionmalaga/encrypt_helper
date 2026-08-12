@@ -1,45 +1,43 @@
 package local.jarios.encrypt.helpers;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
- * Clase utilitaria para validación y manipulación de {@link String}.
- * <p>
- * Proporciona métodos estáticos para comprobar si una cadena es nula o vacía.
- * No se debe instanciar.
- * </p>
- *
- * Autor: Juan Antonio
+ * Utilidades de validacion de cadenas.
  */
-@Slf4j
 public final class StringHelper {
 
-    /**
-     * Constructor privado para evitar instanciación.
-     */
-    private StringHelper() {
-        log.debug("[Constructor] - StringHelper no puede ser instanciado.");
-    }
+  private StringHelper() {
+  }
 
-    /**
-     * Valida si una cadena es nula o está vacía (blank).
-     *
-     * @param cadena Cadena a validar
-     * @return {@code true} si la cadena es nula o blank, {@code false} en caso contrario
-     */
-    public static boolean isInvalidString(String cadena) {
+  /**
+   * Indica si una cadena es nula.
+   *
+   * @param value cadena a validar
+   * @return {@code true} si la cadena es nula
+   */
+  public static boolean isNull(String value) {
+    return value == null;
+  }
 
-        if (cadena == null) {
-            log.debug("[isInvalidString] - La cadena es NULL.");
-            return true;
-        }
+  /**
+   * Indica si una cadena es nula o blanca.
+   *
+   * @param value cadena a validar
+   * @return {@code true} si la cadena es nula o blanca
+   */
+  public static boolean isNullOrBlank(String value) {
+    return value == null || value.isBlank();
+  }
 
-        if (cadena.isBlank()) {
-            log.debug("[isInvalidString] - La cadena es BLANK.");
-            return true;
-        }
-
-        log.debug("[isInvalidString] - La cadena es válida.");
-        return false;
-    }
+  /**
+   * Indica si una cadena es nula o blanca.
+   *
+   * @param value cadena a validar
+   * @return {@code true} si la cadena es nula o blanca
+   * @deprecated usar {@link #isNullOrBlank(String)} para claves y textos cifrados, o
+   *     {@link #isNull(String)} para payloads que puedan ser vacios.
+   */
+  @Deprecated(since = "7.0.0", forRemoval = false)
+  public static boolean isInvalidString(String value) {
+    return isNullOrBlank(value);
+  }
 }

@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - develop
+      - 'jarp/**'
 
 jobs:
   build:
@@ -22,8 +23,5 @@ jobs:
           java-version: '21'
           cache: maven
 
-      - name: Build and test
-        run: ./mvnw -B clean verify
-
-      - name: Quality profile
-        run: ./mvnw -B -Pquality verify
+      - name: Build, test and quality
+        run: ./mvnw -B -Pquality clean verify

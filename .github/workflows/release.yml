@@ -3,7 +3,7 @@ name: Crear Release GitHub
 on:
   push:
     tags:
-      - 'v*.*.*'  # Cuando haces push a un tag que empiece con "v" y versión semántica
+      - 'v*.*.*'
   release:
     types:
       - published
@@ -31,11 +31,8 @@ jobs:
           server-username: GITHUB_ACTOR
           server-password: GITHUB_TOKEN
 
-      - name: Build and test
-        run: ./mvnw -B clean verify
-
-      - name: Publicar paquete Maven en GitHub Packages
-        run: ./mvnw -B deploy -DskipTests
+      - name: Build, test, quality and deploy package
+        run: ./mvnw -B -Pquality clean deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

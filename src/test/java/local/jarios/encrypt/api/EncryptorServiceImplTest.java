@@ -1,6 +1,7 @@
 package local.jarios.encrypt.api;
 
 import local.jarios.encrypt.exception.EncryptorException;
+import org.jasypt.util.text.BasicTextEncryptor;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -8,110 +9,129 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class EncryptorServiceImplTest {
 
-    private static final String TEST_KEY = "clave-maestra-solo-para-tests";
-    private static final String OTHER_TEST_KEY = "otra-clave-solo-para-tests";
-    private static final String PLAIN_TEXT = "texto sensible de prueba";
+  private static final String TEST_KEY = "clave-maestra-solo-para-tests";
+  private static final String OTHER_TEST_KEY = "otra-clave-solo-para-tests";
+  private static final String PLAIN_TEXT = "texto sensible de prueba";
 
-    @Test
-    void encryptAndDecryptWithExplicitKey() {
-        EncryptorService encryptorService = new EncryptorServiceImpl();
+  @Test
+  void encryptAndDecryptWithExplicitKeyUsesVersionedAuthenticatedFormat() {
+    EncryptorService encryptorService = new EncryptorServiceImpl();
 
-        String encryptedText = encryptorService.encrypt(PLAIN_TEXT, TEST_KEY);
-        String decryptedText = encryptorService.decrypt(encryptedText, TEST_KEY);
+    String encryptedText = encryptorService.encrypt(PLAIN_TEXT, TEST_KEY);
+    String decryptedText = encryptorService.decrypt(encryptedText, TEST_KEY);
 
-        assertThat(encryptedText).isNotBlank().isNotEqualTo(PLAIN_TEXT);
-        assertThat(decryptedText).isEqualTo(PLAIN_TEXT);
-    }
+    assertThat(encryptedText).startsWith("EH2(").endsWith(")");
+    assertThat(encryptedText).isNotEqualTo(PLAIN_TEXT);
+    assertThat(decryptedText).isEqualTo(PLAIN_TEXT);
+  }
 
-    @Test
-    void encryptAndDecryptWithConfiguredKey() {
-        EncryptorService encryptorService = new EncryptorServiceImpl(TEST_KEY);
+  @Test
+  void encryptAndDecryptWithConfiguredKey() {
+    EncryptorService encryptorService = new EncryptorServiceImpl(TEST_KEY);
 
-        String encryptedText = encryptorService.encryptDefaultKey(PLAIN_TEXT);
-        String decryptedText = encryptorService.decryptDefaultKey(encryptedText);
+    String encryptedText = encryptorService.encryptDefaultKey(PLAIN_TEXT);
+    String decryptedText = encryptorService.decryptDefaultKey(encryptedText);
 
-        assertThat(encryptedText).isNotBlank().isNotEqualTo(PLAIN_TEXT);
-        assertThat(decryptedText).isEqualTo(PLAIN_TEXT);
-    }
+    assertThat(encryptorService.hasEncryptKeyConfigured()).isTrue();
+    assertThat(encryptedText).startsWith("EH2(").isNotEqualTo(PLAIN_TEXT);
+    assertThat(decryptedText).isEqualTo(PLAIN_TEXT);
+  }
 
-    @Test
-    void defaultKeyOperationsFailWhenKeyIsNotConfigured() {
-        EncryptorService encryptorService = new EncryptorServiceImpl();
+  @Test
+  void encryptAllowsEmptyAndBlankPayloads() {
+    EncryptorService encryptorService = new EncryptorServiceImpl();
 
-        assertThatThrownBy(() -> encryptorService.encryptDefaultKey(PLAIN_TEXT))
-                .isInstanceOf(EncryptorException.class)
-                .hasMessageContaining("Clave por defecto no configurada");
+    String encryptedEmpty = encryptorService.encrypt("", TEST_KEY);
+    String encryptedBlank = encryptorService.encrypt("   ", TEST_KEY);
 
-        assertThatThrownBy(() -> encryptorService.decryptDefaultKey("texto-cifrado"))
-                .isInstanceOf(EncryptorException.class)
-                .hasMessageContaining("Clave por defecto no configurada");
-    }
+    assertThat(encryptorService.decrypt(encryptedEmpty, TEST_KEY)).isEmpty();
+    assertThat(encryptorService.decrypt(encryptedBlank, TEST_KEY)).isEqualTo("   ");
+  }
 
-    @Test
-    void setEncryptKeyRejectsInvalidKeys() {
-        EncryptorService encryptorService = new EncryptorServiceImpl();
+  @Test
+  void defaultKeyOperationsFailWhenKeyIsNotConfigured() {
+    EncryptorService encryptorService = new EncryptorServiceImpl();
 
-        assertThatThrownBy(() -> encryptorService.setEncryptKey(null))
-                .isInstanceOf(EncryptorException.class)
-                .hasMessageContaining("Clave nula o vacía");
+    assertThat(encryptorService.hasEncryptKeyConfigured()).isFalse();
+    assertThatThrownBy(() -> encryptorService.encryptDefaultKey(PLAIN_TEXT))
+        .isInstanceOf(EncryptorException.class)
+        .hasMessageContaining("Clave por defecto no configurada");
 
-        assertThatThrownBy(() -> encryptorService.setEncryptKey("   "))
-                .isInstanceOf(EncryptorException.class)
-                .hasMessageContaining("Clave nula o vacía");
-    }
+    assertThatThrownBy(() -> encryptorService.decryptDefaultKey("texto-cifrado"))
+        .isInstanceOf(EncryptorException.class)
+        .hasMessageContaining("Clave por defecto no configurada");
+  }
 
-    @Test
-    void encryptRejectsInvalidInput() {
-        EncryptorService encryptorService = new EncryptorServiceImpl();
+  @Test
+  void setEncryptKeyRejectsInvalidKeys() {
+    EncryptorService encryptorService = new EncryptorServiceImpl();
 
-        assertThatThrownBy(() -> encryptorService.encrypt(null, TEST_KEY))
-                .isInstanceOf(EncryptorException.class)
-                .hasMessageContaining("Texto a cifrar nulo o vacío");
+    assertThatThrownBy(() -> encryptorService.setEncryptKey(null))
+        .isInstanceOf(EncryptorException.class)
+        .hasMessageContaining("Clave nula o vacia");
 
-        assertThatThrownBy(() -> encryptorService.encrypt("   ", TEST_KEY))
-                .isInstanceOf(EncryptorException.class)
-                .hasMessageContaining("Texto a cifrar nulo o vacío");
+    assertThatThrownBy(() -> encryptorService.setEncryptKey("   "))
+        .isInstanceOf(EncryptorException.class)
+        .hasMessageContaining("Clave nula o vacia");
+  }
 
-        assertThatThrownBy(() -> encryptorService.encrypt(PLAIN_TEXT, null))
-                .isInstanceOf(EncryptorException.class)
-                .hasMessageContaining("Clave de cifrado nula o vacía");
+  @Test
+  void encryptRejectsInvalidInput() {
+    EncryptorService encryptorService = new EncryptorServiceImpl();
 
-        assertThatThrownBy(() -> encryptorService.encrypt(PLAIN_TEXT, "   "))
-                .isInstanceOf(EncryptorException.class)
-                .hasMessageContaining("Clave de cifrado nula o vacía");
-    }
+    assertThatThrownBy(() -> encryptorService.encrypt(null, TEST_KEY))
+        .isInstanceOf(EncryptorException.class)
+        .hasMessageContaining("Texto a cifrar nulo");
 
-    @Test
-    void decryptRejectsInvalidInput() {
-        EncryptorService encryptorService = new EncryptorServiceImpl();
+    assertThatThrownBy(() -> encryptorService.encrypt(PLAIN_TEXT, null))
+        .isInstanceOf(EncryptorException.class)
+        .hasMessageContaining("Clave de cifrado nula o vacia");
 
-        assertThatThrownBy(() -> encryptorService.decrypt(null, TEST_KEY))
-                .isInstanceOf(EncryptorException.class)
-                .hasMessageContaining("Texto a descifrar nulo o vacío");
+    assertThatThrownBy(() -> encryptorService.encrypt(PLAIN_TEXT, "   "))
+        .isInstanceOf(EncryptorException.class)
+        .hasMessageContaining("Clave de cifrado nula o vacia");
+  }
 
-        assertThatThrownBy(() -> encryptorService.decrypt("   ", TEST_KEY))
-                .isInstanceOf(EncryptorException.class)
-                .hasMessageContaining("Texto a descifrar nulo o vacío");
+  @Test
+  void decryptRejectsInvalidInput() {
+    EncryptorService encryptorService = new EncryptorServiceImpl();
 
-        assertThatThrownBy(() -> encryptorService.decrypt("texto-cifrado", null))
-                .isInstanceOf(EncryptorException.class)
-                .hasMessageContaining("Clave de descifrado nula o vacía");
+    assertThatThrownBy(() -> encryptorService.decrypt(null, TEST_KEY))
+        .isInstanceOf(EncryptorException.class)
+        .hasMessageContaining("Texto a descifrar nulo o vacio");
 
-        assertThatThrownBy(() -> encryptorService.decrypt("texto-cifrado", "   "))
-                .isInstanceOf(EncryptorException.class)
-                .hasMessageContaining("Clave de descifrado nula o vacía");
-    }
+    assertThatThrownBy(() -> encryptorService.decrypt("   ", TEST_KEY))
+        .isInstanceOf(EncryptorException.class)
+        .hasMessageContaining("Texto a descifrar nulo o vacio");
 
-    @Test
-    void decryptWithWrongKeyDoesNotExposeOriginalTextWhenOperationSucceeds() {
-        EncryptorService encryptorService = new EncryptorServiceImpl();
-        String encryptedText = encryptorService.encrypt(PLAIN_TEXT, TEST_KEY);
+    assertThatThrownBy(() -> encryptorService.decrypt("texto-cifrado", null))
+        .isInstanceOf(EncryptorException.class)
+        .hasMessageContaining("Clave de descifrado nula o vacia");
 
-        try {
-            String decryptedText = encryptorService.decrypt(encryptedText, OTHER_TEST_KEY);
-            assertThat(decryptedText).isNotEqualTo(PLAIN_TEXT);
-        } catch (EncryptorException ex) {
-            assertThat(ex).hasMessageContaining("Error inesperado durante el proceso de descifrado");
-        }
-    }
+    assertThatThrownBy(() -> encryptorService.decrypt("texto-cifrado", "   "))
+        .isInstanceOf(EncryptorException.class)
+        .hasMessageContaining("Clave de descifrado nula o vacia");
+  }
+
+  @Test
+  void decryptWithWrongKeyFailsAuthentication() {
+    EncryptorService encryptorService = new EncryptorServiceImpl();
+    String encryptedText = encryptorService.encrypt(PLAIN_TEXT, TEST_KEY);
+
+    assertThatThrownBy(() -> encryptorService.decrypt(encryptedText, OTHER_TEST_KEY))
+        .isInstanceOf(EncryptorException.class)
+        .hasMessageContaining("Texto cifrado no autentico o clave incorrecta");
+  }
+
+  @Test
+  void decryptsLegacyJasyptTextWithoutVersionPrefix() {
+    BasicTextEncryptor legacyEncryptor = new BasicTextEncryptor();
+    legacyEncryptor.setPassword(TEST_KEY);
+    String legacyEncryptedText = legacyEncryptor.encrypt(PLAIN_TEXT);
+
+    EncryptorService encryptorService = new EncryptorServiceImpl();
+
+    assertThat(legacyEncryptedText).doesNotStartWith("EH2(");
+    assertThat(encryptorService.decrypt(legacyEncryptedText, TEST_KEY)).isEqualTo(PLAIN_TEXT);
+  }
 }
