@@ -1,11 +1,11 @@
 # Auditoria viva del proyecto encrypt-helper
 
-Fecha de creacion: 2026-08-12  
-Ultima revision: 2026-08-12  
-Proyecto: `local.jarios:encrypt-helper`  
-Version auditada inicialmente: `6.0.0`  
-Version preparada tras aplicar hitos: `7.0.0`  
-Rama de aplicacion: `jarp/aplicar-auditoria-viva`  
+Fecha de creacion: 2026-08-12
+Ultima revision: 2026-08-12
+Proyecto: `local.jarios:encrypt-helper`
+Version auditada inicialmente: `6.0.0`
+Version preparada tras aplicar hitos: `7.0.0`
+Rama de aplicacion: `jarp/aplicar-auditoria-viva`
 Commit base inicial: `6c5e47b Subir version a 6.0.0`
 
 ## Como mantener viva esta auditoria
@@ -37,7 +37,8 @@ El riesgo residual principal queda en la dependencia de lectura legada con Jasyp
 | Perfil de calidad | Correcto | 2026-08-12 | `.\mvnw.cmd -B -Pquality verify`: build success, SpotBugs 0 issues, Checkstyle 0 violations |
 | Formato criptografico nuevo | Correcto | 2026-08-12 | Tests validan prefijo `EH2(` y fallo con clave incorrecta |
 | Compatibilidad legado | Correcto | 2026-08-12 | Test `decryptsLegacyJasyptTextWithoutVersionPrefix` |
-| API sin exposicion de clave | Correcto | 2026-08-12 | `getEncryptKey()` eliminado, `hasEncryptKeyConfigured()` anadido |`r`n| Maven Wrapper actualizado | Correcto | 2026-08-12 | `.\mvnw.cmd -version`: Apache Maven 3.9.16 |
+| API sin exposicion de clave | Correcto | 2026-08-12 | `getEncryptKey()` eliminado, `hasEncryptKeyConfigured()` anadido |
+| Maven Wrapper actualizado | Correcto | 2026-08-12 | `.\mvnw.cmd -version`: Apache Maven 3.9.16 |
 | Checkstyle bloqueante | Correcto | 2026-08-12 | `failOnViolation=true` y quality verde |
 | Dependencias estables | Correcto | 2026-08-12 | POM actualizado; solo quedan disponibles `slf4j-api` alpha, Surefire milestone y betas Maven 4, descartadas para release estable |
 
@@ -62,13 +63,14 @@ El riesgo residual principal queda en la dependencia de lectura legada con Jasyp
 | Lombok | Retirado |
 | CI | Unico build `./mvnw -B -Pquality clean verify` |
 | Release | `./mvnw -B -Pquality clean deploy` antes de publicar artefactos |
+| GitHub Actions runtime | `actions/checkout@v7` y `actions/setup-java@v5`, compatibles con Node 24 |
 
 ## Hallazgos actualizados
 
 ### H01 - Estrategia criptografica no apta para alto impacto
 
-Prioridad: **P0**  
-Estado: **Hecho**  
+Prioridad: **P0**
+Estado: **Hecho**
 Fecha cierre: 2026-08-12
 
 Se implementa formato `EH2(...)` con AES-GCM y PBKDF2-HMAC-SHA256. La decision queda documentada en `docs/auditorias/decision-criptografia-2026-08-12.md`.
@@ -77,76 +79,84 @@ Riesgo residual: Jasypt sigue presente solo para descifrado legado. Debe retirar
 
 ### H02 - La API publica expone la clave configurada
 
-Prioridad: **P1**  
-Estado: **Hecho**  
+Prioridad: **P1**
+Estado: **Hecho**
 Fecha cierre: 2026-08-12
 
 Se elimina `EncryptorService#getEncryptKey()` y se anade `hasEncryptKeyConfigured()`.
 
 ### H03 - Validacion de entrada demasiado restrictiva para texto plano
 
-Prioridad: **P1**  
-Estado: **Hecho**  
+Prioridad: **P1**
+Estado: **Hecho**
 Fecha cierre: 2026-08-12
 
 Se separa la validacion de claves y payloads. El texto plano `null` es invalido, pero cadenas vacias o blancas se pueden cifrar.
 
 ### H04 - Checkstyle no bloquea y acumula deuda conocida
 
-Prioridad: **P2**  
-Estado: **Hecho**  
+Prioridad: **P2**
+Estado: **Hecho**
 Fecha cierre: 2026-08-12
 
 Se corrige la linea base a 0 violaciones y `failOnViolation` queda en `true`.
 
 ### H05 - Dependencias de test y plugins tienen actualizaciones estables disponibles
 
-Prioridad: **P2**  
-Estado: **Hecho**  
+Prioridad: **P2**
+Estado: **Hecho**
 Fecha cierre: 2026-08-12
 
 Se actualizan versiones estables prudentes y se evita subir a versiones alpha, milestone o majors no necesarias.
 
 ### H06 - Java local no esta en el ultimo parche publicado de la familia 21
 
-Prioridad: **P2**  
-Estado: **Bloqueado**  
+Prioridad: **P2**
+Estado: **Bloqueado**
 Fecha revision: 2026-08-12
 
 Actualizar el JDK instalado en la maquina local no es un cambio de repositorio. El README deja documentado que se recomienda usar el ultimo parche de Java 21 LTS. CI mantiene `java-version: '21'` para recibir una distribucion actual de Temurin.
 
 ### H07 - Maven Wrapper no esta en la ultima version estable de Maven 3.9.x
 
-Prioridad: **P3**  
-Estado: **Hecho**  
+Prioridad: **P3**
+Estado: **Hecho**
 Fecha cierre: 2026-08-12
 
 `.mvn/wrapper/maven-wrapper.properties` apunta a Maven 3.9.16.
 
 ### H08 - CI ejecuta dos builds completos
 
-Prioridad: **P3**  
-Estado: **Hecho**  
+Prioridad: **P3**
+Estado: **Hecho**
 Fecha cierre: 2026-08-12
 
 CI queda simplificado a un unico comando `./mvnw -B -Pquality clean verify`.
 
 ### H09 - Release hace deploy saltando tests despues de haber construido
 
-Prioridad: **P3**  
-Estado: **Hecho**  
+Prioridad: **P3**
+Estado: **Hecho**
 Fecha cierre: 2026-08-12
 
 Release queda con `./mvnw -B -Pquality clean deploy`, de forma que compila, testea, ejecuta calidad y despliega en una misma ejecucion.
 
 ### H10 - Lombok aporta poco valor y condiciona consumidores/builds
 
-Prioridad: **P3**  
-Estado: **Hecho**  
+Prioridad: **P3**
+Estado: **Hecho**
 Fecha cierre: 2026-08-12
 
 Lombok se retira del POM y del codigo. Los loggers quedan declarados explicitamente con SLF4J.
 
+
+### H11 - Acciones GitHub deprecadas por runtime Node 20
+
+Prioridad: **P2**
+Estado: **Hecho**
+Fecha cierre: 2026-08-12
+
+Los workflows usaban `actions/checkout@v4` y `actions/setup-java@v4`, que GitHub marco con avisos por runtime Node 20 y deprecacion de `setup-java@v4`. Se actualizan a `actions/checkout@v7` y `actions/setup-java@v5` para usar majors vigentes compatibles con Node 24.
 ## Actualizaciones aplicadas
 
 ### Plataforma
@@ -197,6 +207,7 @@ Lombok se retira del POM y del codigo. Los loggers quedan declarados explicitame
 | AV-10 | Simplificar CI para evitar builds duplicados | P3 | Hecho | Workflow CI actualizado | 2026-08-12 |
 | AV-11 | Revisar release para publicar exactamente artefactos verificados | P3 | Hecho | Release ejecuta `clean deploy` con `quality` | 2026-08-12 |
 | AV-12 | Evaluar retirada de Lombok | P3 | Hecho | Lombok retirado de POM y codigo | 2026-08-12 |
+| AV-13 | Migrar GitHub Actions de Node 20/deprecadas a majors compatibles con Node 24 | P2 | Hecho | `actions/checkout@v7`, `actions/setup-java@v5` | 2026-08-12 |
 
 ## Riesgo por area actualizado
 
@@ -209,7 +220,7 @@ Lombok se retira del POM y del codigo. Los loggers quedan declarados explicitame
 | Testing | Bajo-medio | Tests cubren contrato principal, autenticidad, payload vacio y legado |
 | Dependencias | Bajo-medio | Updates estables aplicados; Jasypt queda por compatibilidad legado |
 | Documentacion | Bajo | README, changelog y ADR actualizados |
-| CI/CD | Bajo | CI y release verifican calidad antes de publicar |
+| CI/CD | Bajo | CI y release verifican calidad antes de publicar; acciones oficiales migradas a majors compatibles con Node 24 |
 
 ## Comandos de mantenimiento
 
@@ -245,4 +256,4 @@ Lombok se retira del POM y del codigo. Los loggers quedan declarados explicitame
 - 2026-08-12: AV-08 y AV-09 cerrados con Checkstyle bloqueante y 0 violaciones.
 - 2026-08-12: AV-10 y AV-11 cerrados ajustando CI y release.
 - 2026-08-12: AV-12 cerrado retirando Lombok.
-
+- 2026-08-12: AV-13 cerrado migrando acciones oficiales de GitHub a majors compatibles con Node 24.
