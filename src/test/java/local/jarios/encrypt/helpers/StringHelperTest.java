@@ -6,18 +6,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class StringHelperTest {
 
-    @Test
-    void nullStringIsInvalid() {
-        assertThat(StringHelper.isInvalidString(null)).isTrue();
-    }
+  @Test
+  void nullStringIsNull() {
+    assertThat(StringHelper.isNull(null)).isTrue();
+  }
 
-    @Test
-    void blankStringIsInvalid() {
-        assertThat(StringHelper.isInvalidString("   ")).isTrue();
-    }
+  @Test
+  void emptyStringIsNotNull() {
+    assertThat(StringHelper.isNull("")).isFalse();
+  }
 
-    @Test
-    void textWithContentIsValid() {
-        assertThat(StringHelper.isInvalidString("contenido")).isFalse();
-    }
+  @Test
+  void nullStringIsBlankInvalid() {
+    assertThat(StringHelper.isNullOrBlank(null)).isTrue();
+  }
+
+  @Test
+  void blankStringIsBlankInvalid() {
+    assertThat(StringHelper.isNullOrBlank("   ")).isTrue();
+  }
+
+  @Test
+  void textWithContentIsValid() {
+    assertThat(StringHelper.isNullOrBlank("contenido")).isFalse();
+  }
 }

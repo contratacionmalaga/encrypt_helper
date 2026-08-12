@@ -1,5 +1,35 @@
 # Changelog
 
+## 7.0.0 - Aplicacion de auditoria viva 2026-08-12
+
+### Seguridad
+
+- Sustituido el cifrado nuevo basado en Jasypt `BasicTextEncryptor` por un formato versionado `EH2(...)` con AES-GCM y PBKDF2-HMAC-SHA256.
+- Anadida autenticacion criptografica: una clave incorrecta o un texto manipulado falla de forma controlada.
+- Mantenida compatibilidad de lectura para textos cifrados antiguos sin prefijo `EH2(` mediante descifrado legado Jasypt.
+- Eliminado `getEncryptKey()` de la API publica para no exponer claves en claro.
+- Anadido `hasEncryptKeyConfigured()` como alternativa segura.
+- Separada la validacion de claves y payloads: los textos vacios o blancos pueden cifrarse; las claves blancas siguen rechazandose.
+
+### Calidad
+
+- Retirado Lombok del codigo principal y de la demo de test.
+- Actualizadas dependencias de test y plugins Maven estables.
+- Checkstyle pasa a ser bloqueante con `failOnViolation=true`.
+- Simplificado CI para ejecutar un unico build con el perfil `quality`.
+
+### Plataforma
+
+- Subida la version del proyecto a `7.0.0` por cambios incompatibles de API y formato.
+- Actualizado Maven Wrapper a Maven 3.9.16.
+- Documentada la recomendacion de usar el ultimo parche de Java 21 LTS.
+
+### Compatibilidad
+
+- Cambio incompatible: desaparece `EncryptorService#getEncryptKey()`.
+- Cambio de formato: los cifrados nuevos se generan como `EH2(...)`.
+- Compatibilidad mantenida: `decrypt` sigue aceptando textos legados de Jasypt sin prefijo.
+
 ## 6.0.0 - Actuacion de auditoria 2026-05-09
 
 ### Seguridad
