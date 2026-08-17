@@ -3,8 +3,8 @@ package local.jarios.encrypt.api;
 import local.jarios.encrypt.exception.EncryptorException;
 
 /**
- * Servicio de cifrado y descifrado de texto.
- * Permite operar con una clave configurada externamente o pasada en cada llamada.
+ * Servicio de cifrado y descifrado de texto. Permite operar con una clave configurada externamente
+ * o pasada en cada llamada.
  *
  * @author Juan
  * @since 1.0.0

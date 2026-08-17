@@ -1,8 +1,6 @@
 package local.jarios.encrypt.exception;
 
-/**
- * Excepcion personalizada que representa errores durante el cifrado o descifrado.
- */
+/** Excepcion personalizada que representa errores durante el cifrado o descifrado. */
 public class EncryptorException extends RuntimeException {
 
   /**

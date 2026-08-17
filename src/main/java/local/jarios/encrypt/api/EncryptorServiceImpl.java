@@ -21,8 +21,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Implementacion de {@link EncryptorService} con cifrado versionado.
  *
- * <p>Los nuevos cifrados se generan con formato {@code EH2(...)} usando AES-GCM y PBKDF2.
- * Los textos sin prefijo se descifran con Jasypt para mantener compatibilidad legado.
+ * <p>Los nuevos cifrados se generan con formato {@code EH2(...)} usando AES-GCM y PBKDF2. Los
+ * textos sin prefijo se descifran con Jasypt para mantener compatibilidad legado.
  *
  * @author Juan
  * @since 1.0.0
@@ -45,9 +45,7 @@ public final class EncryptorServiceImpl implements EncryptorService {
   private final SecureRandom secureRandom;
   private String encryptKey;
 
-  /**
-   * Constructor por defecto. La clave debe configurarse explicitamente.
-   */
+  /** Constructor por defecto. La clave debe configurarse explicitamente. */
   public EncryptorServiceImpl() {
     this(new SecureRandom());
   }

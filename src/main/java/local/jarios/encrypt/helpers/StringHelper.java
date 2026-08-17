@@ -1,12 +1,9 @@
 package local.jarios.encrypt.helpers;
 
-/**
- * Utilidades de validacion de cadenas.
- */
+/** Utilidades de validacion de cadenas. */
 public final class StringHelper {
 
-  private StringHelper() {
-  }
+  private StringHelper() {}
 
   /**
    * Indica si una cadena es nula.
@@ -33,8 +30,8 @@ public final class StringHelper {
    *
    * @param value cadena a validar
    * @return {@code true} si la cadena es nula o blanca
-   * @deprecated usar {@link #isNullOrBlank(String)} para claves y textos cifrados, o
-   *     {@link #isNull(String)} para payloads que puedan ser vacios.
+   * @deprecated usar {@link #isNullOrBlank(String)} para claves y textos cifrados, o {@link
+   *     #isNull(String)} para payloads que puedan ser vacios.
    */
   @Deprecated(since = "7.0.0", forRemoval = false)
   public static boolean isInvalidString(String value) {

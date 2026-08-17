@@ -6,18 +6,13 @@ import local.jarios.encrypt.exception.EncryptorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Clase de demostracion para ejecutar cifrado y descifrado desde linea de comandos.
- */
+/** Clase de demostracion para ejecutar cifrado y descifrado desde linea de comandos. */
 public class EncryptDemo {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(EncryptDemo.class);
 
-  /**
-   * Constructor por defecto.
-   */
-  public EncryptDemo() {
-  }
+  /** Constructor por defecto. */
+  public EncryptDemo() {}
 
   /**
    * Ejecuta la demostracion.
