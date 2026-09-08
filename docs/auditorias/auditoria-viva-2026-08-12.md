@@ -1,7 +1,7 @@
 # Auditoria viva del proyecto encrypt-helper
 
 Fecha de creacion: 2026-08-12
-Ultima revision: 2026-08-12
+Ultima revision: 2026-09-08
 Proyecto: `local.jarios:encrypt-helper`
 Version auditada inicialmente: `6.0.0`
 Version definitiva preparada: `7.0.1`
@@ -65,6 +65,7 @@ El riesgo residual principal queda en la dependencia de lectura legada con Jasyp
 | Release | `./mvnw -B -Pquality clean deploy` antes de publicar artefactos |
 | GitHub Actions runtime | `actions/checkout@v7` y `actions/setup-java@v5`, compatibles con Node 24 |
 | Ramas activas en GitHub | Solo `main`; ramas de trabajo mergeadas eliminadas |
+| Dependabot Updates | Configurado para Maven y GitHub Actions con revision semanal |
 
 ## Hallazgos actualizados
 
@@ -158,6 +159,14 @@ Estado: **Hecho**
 Fecha cierre: 2026-08-12
 
 Los workflows usaban `actions/checkout@v4` y `actions/setup-java@v4`, que GitHub marco con avisos por runtime Node 20 y deprecacion de `setup-java@v4`. Se actualizan a `actions/checkout@v7` y `actions/setup-java@v5` para usar majors vigentes compatibles con Node 24.
+
+### H12 - Dependabot Updates no configurado
+
+Prioridad: **P2**
+Estado: **Hecho**
+Fecha cierre: 2026-09-08
+
+Se anade `.github/dependabot.yml` para revisar semanalmente dependencias Maven y acciones de GitHub. Los updates se agrupan por ecosistema, usan `main` como rama objetivo y etiquetan los PRs como `dependencies`, `java` o `github-actions` segun corresponda.
 ## Actualizaciones aplicadas
 
 ### Plataforma
@@ -210,6 +219,7 @@ Los workflows usaban `actions/checkout@v4` y `actions/setup-java@v4`, que GitHub
 | AV-12 | Evaluar retirada de Lombok | P3 | Hecho | Lombok retirado de POM y codigo | 2026-08-12 |
 | AV-13 | Migrar GitHub Actions de Node 20/deprecadas a majors compatibles con Node 24 | P2 | Hecho | `actions/checkout@v7`, `actions/setup-java@v5` | 2026-08-12 |
 | AV-14 | Podar ramas mergeadas y dejar estructura profesional de ramas | P2 | Hecho | GitHub conserva solo `main`; releases mediante tags | 2026-08-12 |
+| AV-15 | Activar Dependabot Updates para Maven y GitHub Actions | P2 | Hecho | `.github/dependabot.yml` con revision semanal | 2026-09-08 |
 
 ## Riesgo por area actualizado
 
@@ -222,7 +232,7 @@ Los workflows usaban `actions/checkout@v4` y `actions/setup-java@v4`, que GitHub
 | Testing | Bajo-medio | Tests cubren contrato principal, autenticidad, payload vacio y legado |
 | Dependencias | Bajo-medio | Updates estables aplicados; Jasypt queda por compatibilidad legado |
 | Documentacion | Bajo | README, changelog y ADR actualizados |
-| CI/CD | Bajo | CI y release verifican calidad antes de publicar; acciones oficiales migradas a majors compatibles con Node 24 |
+| CI/CD | Bajo | CI y release verifican calidad antes de publicar; acciones oficiales migradas a majors compatibles con Node 24 y Dependabot Updates activo |
 | Estructura de ramas | Bajo | GitHub queda con `main` como unica rama activa; trabajo futuro mediante ramas `jarp/*` y PR |
 
 ## Comandos de mantenimiento
@@ -261,3 +271,4 @@ Los workflows usaban `actions/checkout@v4` y `actions/setup-java@v4`, que GitHub
 - 2026-08-12: AV-12 cerrado retirando Lombok.
 - 2026-08-12: AV-13 cerrado migrando acciones oficiales de GitHub a majors compatibles con Node 24.
 - 2026-08-12: AV-14 cerrado podando ramas mergeadas y dejando `main` como unica rama activa en GitHub.
+- 2026-09-08: AV-15 cerrado activando Dependabot Updates para Maven y GitHub Actions.
