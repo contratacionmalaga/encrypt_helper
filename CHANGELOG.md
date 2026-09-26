@@ -1,6 +1,6 @@
 # Changelog
 
-## 7.1.0 - Pendiente de publicación
+## 7.1.0 - 2026-09-26
 
 ### Construcción y calidad
 
