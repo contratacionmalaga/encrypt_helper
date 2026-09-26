@@ -1,5 +1,23 @@
 # Changelog
 
+## 7.1.0 - Pendiente de publicación
+
+### Construcción y calidad
+
+- Actualizado el parent a `jarios-parent:1.0.15`, manteniendo centralizadas las versiones de dependencias y plugins.
+- Compiler 3.16.0, Surefire 3.6.0, Versions 2.22.0, SpotBugs 4.10.4.1 y Spotless 3.10.3.
+- Checkstyle 14.1.0 y Google Java Format 1.36.1.
+
+### CI/CD y documentación
+
+- Actualizado `actions/setup-java` a `v6.0.1` en los cuatro workflows.
+- Renovado el README con integración Maven, API, formato criptográfico, compatibilidad, inventario y operación.
+
+### Compatibilidad
+
+- Se mantiene la API, el formato `EH2(...)` y la lectura del formato legado.
+- Java 21 y Maven 3.9.16 continúan siendo los requisitos de referencia.
+
 ## 7.0.1 - Release definitiva GitHub 2026-08-12
 
 ### CI/CD
